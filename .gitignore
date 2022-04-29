@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Certbot
+config/certbot/
+certbot/
+
 # C extensions
 *.so
 

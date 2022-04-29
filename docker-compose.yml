@@ -3,6 +3,7 @@ version: '3.7'
 services:
   db:
     image: postgres
+    restart: always
     volumes:
       - database_data:/var/lib/postgresql/data/
     networks:
@@ -12,6 +13,7 @@ services:
 
   backend:
     build: ./backend
+    restart: always
     expose:
       - 8000
     networks:
@@ -24,6 +26,7 @@ services:
 
   nginx:
     image: nginx
+    restart: always
     ports:
       - 80:80
       - 443:443
