@@ -50,8 +50,8 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="d-flex flex-column h-100">
-                  <p class="mb-1 pt-2 text-bold">Built by developers</p>
-                  <h5 class="font-weight-bolder">Vite Soft UI Dashboard</h5>
+                  <p class="mb-1 pt-2 text-bold">Cambio de prueba</p>
+                  <h5 class="font-weight-bolder">Cambio de prueba</h5>
                   <p class="mb-5">
                     From colors, cards, typography to complex elements, you will
                     find the full documentation.
@@ -103,7 +103,7 @@
               class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3"
             >
               <h5 class="text-white font-weight-bolder mb-4 pt-2">
-                Work with the rockets
+                Cambio de prueba
               </h5>
               <p class="text-white">
                 Wealth creation is an evolutionarily recent positive-sum game.
