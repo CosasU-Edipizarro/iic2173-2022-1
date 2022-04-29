@@ -19,7 +19,7 @@ jobs:
     - name: Build
       uses: borales/actions-yarn@v2.3.0
       with:
-        cmd: --cwd frontend builld
+        cmd: --cwd frontend build
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
