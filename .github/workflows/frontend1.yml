@@ -1,4 +1,4 @@
-name: Upload Website
+name: Upload Vue to S3
 
 on:
   push:
@@ -11,7 +11,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      working-directory: ./frontend
+        run: |
+          ls
+          cd frontend
+          pwd
+          yarn install
+          yarn build
 
     - name: Install
       uses: borales/actions-yarn@v2.3.0
