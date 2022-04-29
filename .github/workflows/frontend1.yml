@@ -14,14 +14,12 @@ jobs:
     - name: Install
       uses: borales/actions-yarn@v2.3.0
       with:
-        cmd: install
-        dir: frontend
+        cmd: --cwd frontend install
 
     - name: Build
       uses: borales/actions-yarn@v2.3.0
       with:
-        cmd: build
-        dir: frontend
+        cmd: --cwd frontend builld
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
