@@ -9,19 +9,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+
+    - name: Install
+      uses: borales/actions-yarn@v2.3.0
+      with:
         run: |
           ls
           cd frontend
           pwd
           yarn install
           yarn build
-
-    - name: Install
-      uses: borales/actions-yarn@v2.3.0
-      with:
-        cmd: install # will run `yarn install` command
+        # cmd: install # will run `yarn install` command
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
