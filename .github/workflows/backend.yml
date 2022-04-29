@@ -21,6 +21,10 @@ jobs:
             cd /home/ubuntu/g19
             pwd
             git pull
+            echo "Doing: sudo docker compose stop"
+            sudo docker compose stop
+            echo "Doing: sudo docker compose build"
+            sudo docker compose build
             echo "Doing: sudo docker compose up -d"
             sudo docker compose up -d
             echo "Doing: sudo systemctl daemon-reload"
