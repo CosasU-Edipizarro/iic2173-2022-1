@@ -1,11 +1,11 @@
-name: SSH-to-EC2
+name: SSH to EC2 G19
 on:
   push:
     branches:
       - master
 jobs:
   deploy:
-    name: Deploy to backend to EC2
+    name: Deploy backend to EC2
     runs-on: ubuntu-latest
     steps:
       - name: multiple command
