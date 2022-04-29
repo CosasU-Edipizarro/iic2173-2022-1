@@ -6,48 +6,37 @@
 
 | Campo       | Valor                         |
 | ----------- | ----------------------------- |
-| IP Servidor | 54.176.117.213                |
-| URL         | https://tarea-edipizarro.xyz/ |
+| IP Servidor | 3.136.190.174                 |
+| URL API     | https://api.iic2173-g19.xyz/  |
+| URL FRONT   | https://iic2173-g19.xyz/      |
 
 ## Stack
 
 |            | Lenguaje   | Framework  | Source code                            |
 | ---------- | ---------- | ---------- | -------------------------------------- |
-| API        | Python     | Django     | `~/backend_django`                     |
+| API        | Python     | Django     | `~/backend`                            |
 | Storage    | SQL        | PostgreSQL | `-`                                    |
 | Web server | nginx      | -          | `~/config/nginx/production/local.conf` |
+| Front      | Javascript | Vue        | `~/frontend`                           |
 
 # Instrucciones
 
-1. Hacer builds de frontend y backend
+1. Para correr en local
    ```
-   sudo docker-compose build
-   ```
-
-2. Ejecutar migraciones
-   ```
-   sudo docker-compose run --rm djangobackend /bin/bash -c "python ./manage.py makemigrations"
-   sudo docker-compose run --rm djangobackend /bin/bash -c "python ./manage.py migrate"
+   docker-compose -f docker-compose.vev.yml up
    ```
 
-3. Collect statics
+2. Para correr en servidor
    ```
-   sudo docker-compose run --rm djangobackend /bin/bash -c "python ./manage.py collectstatic --no-input"
-   ```
-
-4. Correr la aplicación
-   ```
-   sudo docker-compose up
+   sudo docker-compose up -d
    ```
 
-La APP está disponible en  https://tarea-edipizarro.xyz/
+La API está disponible en  https://api.iic2173-g19.xyz/
+El frontend está disponible en https://iic2173-g19.xyz/
 
 ## Comandos útiles
 
-| Comando                                                                                    | Para qué                                          |
-| ------------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| `sudo docker-compose run --rm djangobackend /bin/bash -c "python ./manage.py createsuperuser"` | Crear un admin                                     |
-| `sudo docker-compose run --rm djangobackend /bin/bash -c "python ./manage.py {COMMAND}"`       | Ejecutar algun comando del manage.py              |
-
 ## Misc
-Configuracion/Contraseña de la base de datos: `/config/environment/.env.db`
+Variables de ambiente: `/config/environment/`
+Configuración Nginx: `/config/nginx/`
+Certificados certbot `/config/certbot/`
