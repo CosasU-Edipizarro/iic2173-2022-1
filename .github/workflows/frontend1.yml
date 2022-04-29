@@ -10,16 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Install
       uses: borales/actions-yarn@v2.3.0
       with:
-        run: |
-          cmd ls
-          cmd cd frontend
-          cmd pwd
-          cmd install
-          cmd build
-        # cmd: install # will run `yarn install` command
+        cmd: install
+        dir: frontend
+
+    - name: Build
+      uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: build
+        dir: frontend
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -29,4 +31,4 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Deploy static site to S3 bucket
-      run: aws s3 sync ./public/ s3://iic2173-g19.xyz --delete
+      run: aws s3 sync ./frontend/dist/ s3://iic2173-g19.xyz --delete
