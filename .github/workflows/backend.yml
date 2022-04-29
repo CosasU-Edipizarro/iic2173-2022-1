@@ -17,8 +17,11 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             echo "Hello G19! I SSH into the repo! (:"
-            ls
-            cd g19
+            pwd
+            cd /home/ubuntu/g19
+            pwd
             git pull
+            echo "Doing: sudo systemctl daemon-reload"
             sudo systemctl daemon-reload
+            echo "Doing: sudo systemctl restart docker"
             sudo systemctl restart docker
