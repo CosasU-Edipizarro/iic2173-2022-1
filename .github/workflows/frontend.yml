@@ -1,0 +1,42 @@
+name: Deployment front
+on:
+  push:
+    branches:
+      - master
+
+  deployfront:
+    name: Deploy frontend to S3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        working-directory: ./frontend
+
+      - name: Install
+        uses: borales/actions-yarn@v2.3.0
+        working-directory: ./frontend
+        with:
+          cmd: install # will run `yarn install` command
+
+      - name: Build
+        uses: borales/actions-yarn@v2.3.0
+        working-directory: ./frontend
+        with:
+          cmd: build # will run `yarn build` command
+
+      # - name: Deploy
+      #   uses: borales/actions-yarn@v2.3.0
+      #   with:
+      #     cmd: deploy # will run `yarn deploy` command
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        working-directory: ./frontend
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.REGION }}
+
+      - name: Deploy static site to S3 bucket
+        working-directory: ./frontend
+        run: aws s3 sync ./dist/ s3://iic2173-g19.xyz --delete
