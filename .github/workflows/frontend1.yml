@@ -12,6 +12,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Install
+      uses: borales/actions-yarn@v2.3.0
+      # working-directory: ./frontend
+      with:
+        cmd: install # will run `yarn install` command
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
