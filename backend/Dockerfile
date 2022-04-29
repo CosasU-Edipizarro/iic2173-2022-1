@@ -29,7 +29,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 FROM python:3.9
 
 # create directory for the app user
-RUN mkdir -p /home/g19
+# RUN mkdir -p /home/g19
 
 # create the app user
 RUN useradd -ms /bin/bash g19
