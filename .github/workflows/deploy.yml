@@ -1,10 +1,10 @@
-name: SSH to EC2 G19
+name: Deployment
 on:
   push:
     branches:
       - master
 jobs:
-  deploy-back:
+  deployback:
     name: Deploy backend to EC2
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +32,7 @@ jobs:
             echo "Doing: sudo systemctl restart docker"
             sudo systemctl restart docker
 
-  deploy-front:
+  deployfront:
     name: Deploy frontend to S3
     runs-on: ubuntu-latest
     steps:
