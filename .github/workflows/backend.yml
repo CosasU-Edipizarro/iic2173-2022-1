@@ -1,0 +1,24 @@
+name: SSH-to-EC2
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    name: Deploy to backend to EC2
+    runs-on: ubuntu-latest
+    steps:
+      - name: multiple command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            echo "Hello G19! I SSH into the repo! (:"
+            ls
+            cd g19
+            git pull
+            sudo systemctl daemon-reload
+            sudo systemctl restart docker
