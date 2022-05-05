@@ -14,7 +14,7 @@
 
 |            | Lenguaje   | Framework  | Source code                            |
 | ---------- | ---------- | ---------- | -------------------------------------- |
-| API        | Python     | Django     | `~/backend`                            |
+| API        | Python     | FastAPI     | `~/backend`                           |
 | Storage    | SQL        | PostgreSQL | `-`                                    |
 | Web server | nginx      | -          | `~/config/nginx/production/local.conf` |
 | Front      | Javascript | Vue        | `~/frontend`                           |
@@ -23,7 +23,7 @@
 
 1. Para correr en local
    ```
-   docker-compose -f docker-compose.vev.yml up
+   docker-compose -f docker-compose.dev.yml up
    ```
 
 2. Para correr en servidor
