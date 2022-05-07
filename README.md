@@ -44,6 +44,19 @@ El frontend está disponible en https://iic2173-g19.xyz/
    export DOCKER_BUILDKIT=0
    ```
 
+2. Si quieres reinicar TODO docker:
+   ```
+   docker-compose down
+   docker rm -f $(docker ps -a -q)
+   docker volume rm $(docker volume ls -q)
+   docker-compose up -d
+   ```
+
+3. Si instalaste docker compose v2, instala compose switch para conseguir compatibilidad con v2
+   ```
+   https://github.com/docker/compose-switch
+   ```
+
 ## Misc
 Variables de ambiente: `/config/environment/`
 Configuración Nginx: `/config/nginx/`
