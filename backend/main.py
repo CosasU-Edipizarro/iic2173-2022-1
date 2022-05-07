@@ -1,15 +1,18 @@
-from typing import Optional
+from db.db_migration import db_migration
+db_migration()
+
 from fastapi import FastAPI
+from routers import routers
 
 
 app = FastAPI()
 
 
+app.include_router(routers["auth"])
+app.include_router(routers["users"])
+app.include_router(routers["locations"])
+app.include_router(routers["protected"])
+
 @app.get("/")
-def read_root():
-    return {"Hello": "World of Github Actions"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+async def read_root():
+    return {"Hello": "World of FastAPI"}

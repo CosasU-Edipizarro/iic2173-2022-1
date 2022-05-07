@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: postgres
+    image: postgis/postgis
     volumes:
       - database_data:/var/lib/postgresql/data/
     networks:
@@ -18,7 +18,7 @@ services:
       - database_network
       - nginx_network
     env_file:
-      - ./config/environment/.env
+      - ./config/environment/.env.back
     depends_on:
       - db
 

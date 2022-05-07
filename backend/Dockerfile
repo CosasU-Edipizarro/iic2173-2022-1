@@ -18,6 +18,8 @@ COPY . .
 
 # install dependencies
 COPY ./requirements.txt .
+# RUN apt update && apt upgrade -y
+# RUN apt install python3-dev libpq-dev -y
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 
