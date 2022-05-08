@@ -45,6 +45,7 @@ class UserBase(Base):
     phone: str
     instagram: str
     sex: str
+    verified: bool
 
 
 class UserCreate(UserBase):
@@ -53,8 +54,40 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    jwt: Optional[JWT]
-    locations: Optional[list[Location]]
+    # jwt: Optional[JWT]
+    # locations: Optional[list[Location]]
+
+    class Config:
+        orm_mode = True
+
+
+class PingBase(Base):
+    seen: bool
+    created_at: Optional[str] = datetime.datetime.utcnow().strftime("%d-%b-%Y (%H:%M:%S.%f)")
+
+
+class PingCreate(PingBase):
+    pass
+
+
+class Ping(PingBase):
+    id: int
+    sender_id: int
+    receiver_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class VerificationEmailBase(Base):
+    pass
+
+class VerificationEmailCreate(VerificationEmailBase):
+    pass
+
+class VerificationEmail(VerificationEmailBase):
+    id: int
+    user_id: int
 
     class Config:
         orm_mode = True

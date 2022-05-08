@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from db.models import Session, User, JWT, Location
+from db.models import Session, User, JWT, Location, Ping, VerificationEmail
 from db import schemas
 from dependencies import utils
 
@@ -32,7 +32,8 @@ def create_user(db: Session, user: schemas.UserCreate):
         phone=user.phone,
         instagram=user.instagram,
         sex=user.sex,
-        password=password_hash
+        password=password_hash,
+        verified=False
     )
     db.add(db_user)
     db.commit()
@@ -87,3 +88,38 @@ def get_jwt(db: Session, user_id: int, user_password: str):
         return jwt
     else:
         raise HTTPException(status_code=401, detail="Wrong password")
+
+
+def get_user_pings_received(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    pings = db.query(Ping).filter(Ping.receiver_id == user_id).offset(skip).limit(limit).all()
+    return pings
+
+
+def get_user_pings_sent(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    pings = db.query(Ping).filter(Ping.sender_id == user_id).offset(skip).limit(limit).all()
+    return pings
+
+
+def create_ping(db: Session, sender_id: int, receiver_id: int):
+    ping = Ping(sender_id = sender_id, receiver_id = receiver_id)
+    db.add(ping)
+    db.commit()
+    db.refresh(ping)
+    return ping
+
+
+def create_verification_email(db: Session, user_id: int):
+    token = utils.generate_unique("hex")
+    user = db.query(User).filter(User.id == user_id).first()
+    if user == None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.verified == False:
+        raise HTTPException(status_code=400, detail="User already verified")
+    verification_email = db.query(VerificationEmail).filter(VerificationEmail.user_id == user_id).first()
+    if verification_email != None:
+        return verification_email
+    verification_email = VerificationEmail(user_id = user_id, token = token)
+    db.add(verification_email)
+    db.commit()
+    db.refresh(verification_email)
+    return verification_email

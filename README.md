@@ -4,58 +4,81 @@
 
 ## Información de la plataforma
 
-| Campo       | Valor                         |
-| ----------- | ----------------------------- |
-| IP Servidor | 3.136.190.174                 |
-| URL API     | https://api.iic2173-g19.xyz/  |
-| URL FRONT   | https://iic2173-g19.xyz/      |
+| Campo       | Valor                            |
+| ----------- | -------------------------------- |
+| IP API      | 3.136.190.174                    |
+| URL API     | https://api.iic2173-g19.xyz/     |
+| URL FRONT   | https://iic2173-g19.xyz/         |
+| Docs API    | https://api.iic2173-g19.xyz/docs |
 
 ## Stack
 
-|            | Lenguaje   | Framework  | Source code                            |
-| ---------- | ---------- | ---------- | -------------------------------------- |
-| API        | Python     | FastAPI     | `~/backend`                           |
-| Storage    | SQL        | PostgreSQL | `-`                                    |
-| Web server | nginx      | -          | `~/config/nginx/production/local.conf` |
-| Front      | Javascript | Vue        | `~/frontend`                           |
+|                | Tech       | Framework  | Source code                            |
+| -------------- | ---------- | ---------- | -------------------------------------- |
+| API            | Python     | FastAPI    | `~/backend`                            |
+| API DB         | SQL        | Postgis    | `-`                                    |
+| API Web server | nginx      | -          | `~/config/nginx/production/local.conf` |
+| Front          | Javascript | Vue        | `~/frontend`                           |
+| Front CDN      | Cloudfront | -          | `AWS`                                  |
 
-# Instrucciones
+## Instrucciones
 
 1. Para correr en local
-   ```
-   docker-compose -f docker-compose.dev.yml build
-   docker-compose -f docker-compose.dev.yml up
-   ```
+  ```
+  docker-compose -f docker-compose.dev.yml build
+  docker-compose -f docker-compose.dev.yml up
+  ```
 
 2. Para correr en servidor
-   ```
-   sudo docker-compose build
-   sudo docker-compose up -d
-   ```
+  ```
+  sudo docker-compose build
+  sudo docker-compose up -d
+  ```
 
 La API está disponible en  https://api.iic2173-g19.xyz/
 El frontend está disponible en https://iic2173-g19.xyz/
 
+## CI/CD
+
+1. Backend
+  El backend tiene CI/CD implementado con Github Actions, Docker, ssh y EC2.
+  Solo se ejecuta cuando se hace merge a `master`
+
+2. Frontend
+  El backend tiene CI/CD implementado con Github Actions, Yarn, AWS-CLI y S3.
+  Solo se ejecuta cuando se hace merge a `master`
+
 ## Comandos útiles
-1. Si tienes error `failed to solve with frontend dockerfile.v0` en `docker-compose build`
-   Correr con sudo
-   O, de no funcionar sudo
-   ```
-   export DOCKER_BUILDKIT=0
-   ```
+1. Si tienes error 
+  ```
+  failed to solve with frontend dockerfile.v0
+  ```
+  En `docker-compose build`
+  Correr con sudo
+  De seguir persistiendo el error, desactivart Buildkit
+  ```
+  export DOCKER_BUILDKIT=0
+  ```
 
-2. Si quieres reinicar TODO docker:
-   ```
-   docker-compose down
-   docker rm -f $(docker ps -a -q)
-   docker volume rm $(docker volume ls -q)
-   docker-compose up -d
-   ```
+2. Para que docker corra en boot (Crear systemd service)
+  ```
+  sudo systemctl enable docker
+  sudo systemctl daemon-reload
+  sudo systemctl restart docker
+  ```
 
-3. Si instalaste docker compose v2, instala compose switch para conseguir compatibilidad con v2
-   ```
-   https://github.com/docker/compose-switch
-   ```
+3. Si quieres reinicar TODO docker:
+  ```
+  sudo docker-compose down
+  sudo docker rm -f $(sudo docker ps -a -q)
+  sudo docker volume rm $(sudo docker volume ls -q)
+  sudo docker-compose up -d
+  ```
+
+4. Si instalaste docker compose v2 (Nuevo default), instala compose switch para conseguir compatibilidad con v1 (Usada por archivo `./init-letsencrypt.sh`)
+  ```
+  https://github.com/docker/compose-switch
+  ```
 
 ## Misc
 Variables de ambiente: `/config/environment/`

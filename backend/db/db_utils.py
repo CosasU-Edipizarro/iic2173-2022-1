@@ -20,4 +20,5 @@ def load_env():
     ENV['EMAIL_HOST'] = os.environ.get('EMAIL_HOST', 'localhost')
     ENV['EMAIL_PORT'] = int(os.environ.get('EMAIL_PORT', 25))
 
+    ENV['SENDGRID_API_KEY'] = os.environ.get('SENDGRID_API_KEY', 'secret')
     return ENV
