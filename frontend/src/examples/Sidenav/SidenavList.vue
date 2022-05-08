@@ -5,41 +5,27 @@
   >
     <ul class="navbar-nav">
       <li class="nav-item">
-        <sidenav-collapse nav-text="Dashboard" :to="{ name: 'Dashboard' }">
+        <sidenav-collapse nav-text="Inicio" :to="{ name: 'Dashboard' }">
           <template #icon>
             <icon name="dashboard" />
           </template>
         </sidenav-collapse>
       </li>
       <li class="nav-item">
-        <sidenav-collapse nav-text="Tables" :to="{ name: 'Tables' }">
+        <sidenav-collapse nav-text="Places" :to="{ name: 'Tables' }">
           <template #icon>
             <icon name="tables" />
           </template>
         </sidenav-collapse>
       </li>
       <li class="nav-item">
-        <sidenav-collapse nav-text="Billing" :to="{ name: 'Billing' }">
+        <sidenav-collapse nav-text="Pings" :to="{ name: 'Billing' }">
           <template #icon>
             <icon name="billing" />
           </template>
         </sidenav-collapse>
       </li>
 
-      <li class="nav-item">
-        <sidenav-collapse nav-text="Virtual Reality" :to="{ name: 'Virtual Reality' }">
-          <template #icon>
-            <icon name="virtual-reality" />
-          </template>
-        </sidenav-collapse>
-      </li>
-      <li class="nav-item">
-        <sidenav-collapse nav-text="RTL" :to="{ name: 'Rtl' }">
-          <template #icon>
-            <icon name="rtl-page" />
-          </template>
-        </sidenav-collapse>
-      </li>
       <li class="mt-3 nav-item">
         <h6
           class="text-xs ps-4 text-uppercase font-weight-bolder opacity-6"
@@ -105,7 +91,7 @@ export default {
   },
   data() {
     return {
-      title: "Vite Soft UI Dashboard",
+      title: "GeoMeetr",
       controls: "dashboardsExamples",
       isActive: "active",
     };

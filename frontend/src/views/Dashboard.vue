@@ -50,17 +50,16 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="d-flex flex-column h-100">
-                  <p class="mb-1 pt-2 text-bold">Cambio de prueba</p>
-                  <h5 class="font-weight-bolder">Cambio de prueba</h5>
+                  <p class="mb-1 pt-2 text-bold">Bienvenido a GeoMeetr</p>
+                  <h5 class="font-weight-bolder">Un lugar para conocer gente nueva!</h5>
                   <p class="mb-5">
-                    From colors, cards, typography to complex elements, you will
-                    find the full documentation.
+                    Registra los lugares que has visitado para mostrar a tus conocidos. Forma nuevas amistades con gente de tu alrededor. 
                   </p>
                   <a
                     class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto"
                     href="javascript:;"
                   >
-                    Read More
+                    Leer más
                     <i
                       class="fas fa-arrow-right text-sm ms-1"
                       aria-hidden="true"
@@ -103,17 +102,16 @@
               class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3"
             >
               <h5 class="text-white font-weight-bolder mb-4 pt-2">
-                Cambio de prueba
+                Políticias de uso
               </h5>
               <p class="text-white">
-                Wealth creation is an evolutionarily recent positive-sum game.
-                It is all about who take the opportunity first.
+                Infórmate acerca de nuestras políticas de uso y la utilización de los datos recopilados.
               </p>
               <a
                 class="text-white text-sm font-weight-bold mb-0 icon-move-right mt-auto"
                 href="javascript:;"
               >
-                Read More
+                Leer más
                 <i
                   class="fas fa-arrow-right text-sm ms-1"
                   aria-hidden="true"
