@@ -47,6 +47,8 @@ El frontend está disponible en https://iic2173-g19.xyz/
 2. Frontend
   El backend tiene CI/CD implementado con Github Actions, Yarn, AWS-CLI y S3.
   Solo se ejecuta cuando se hace merge a `master`
+  
+Para replicar el pipe CI/CD se tienen que copiar los achivos que se encuentran en la carpeta .github/workflows, además se tienen que configurar los actions secrets.
 
 ## Comandos útiles
 1. Si tienes error 
