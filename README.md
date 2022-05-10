@@ -98,3 +98,4 @@ Certificados certbot `/config/certbot/`
  * Por ahora solo se pueden enviar pings y ver cuales te han enviado, pero no se pueden aceptar o rechazar.
  * La documentación del diagrama UML se encuentra dentro de la carpeta /docs
  * La API externa que implementamos agrega la dirección a un lugar según las coordenadas, en "Tus Lugares".
+
