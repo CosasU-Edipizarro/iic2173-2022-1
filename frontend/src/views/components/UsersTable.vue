@@ -71,14 +71,12 @@ export default {
       const token = this.$cookies.get("token");
       if (token) {
         const user_id = this.$cookies.get("user_id");
-        const data = {"sender_id": user_id, "receiver_id": receiver_id};
-        await fetch(`${window.hostname}/pings`, {
+        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: token
           },
-          body: JSON.stringify(data),
         })
         .then(response => response.json())
         .then(() => {

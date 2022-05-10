@@ -12,7 +12,7 @@ export default {
       all_users: {},
       selected_users: [],
       selected_users_locations: {},
-      personal_locations: {},
+      personal_locations: [],
       loaded: false
     };
   },
@@ -134,10 +134,10 @@ export default {
     <div class="container-fluid mt-4">
       <div class="card-header pb-0">
         <div class="row">
-          <div class="col-12 col-md-3 col-xl-4 pb-6 min-height-300">
+          <!-- <div class="col-12 col-md-3 col-xl-4 pb-6 min-height-300">
             <h6 class="mb-0"> Tus ubicaciones </h6>
             <map-locations :locations="personal_locations"/>
-          </div>
+          </div> -->
           <div v-for="(user_locations, user_id) in selected_users_locations" :key="user_id" class="col-12 col-md-3 col-xl-4 pb-6 min-height-300">
             <h6 class="mb-0">Usuario {{ all_users[user_id - 1].name}}</h6>
             <map-locations :locations="user_locations"/>

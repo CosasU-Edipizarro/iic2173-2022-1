@@ -74,8 +74,6 @@ class Ping(Base):
     __tablename__ = 'pings'
     
     id = Column(Integer, primary_key=True, index=True)
-    seen = Column(Boolean(), default=False)
-    created_at = Column(DateTime(), default=datetime.datetime.utcnow)
 
     sender_id = Column(Integer(), ForeignKey('users.id'), index=True)
     receiver_id = Column(Integer(), ForeignKey('users.id'), index=True)

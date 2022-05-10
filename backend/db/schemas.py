@@ -58,8 +58,6 @@ class User(UserBase):
 
 
 class PingBase(Base):
-    seen: bool
-    created_at: Optional[str] = str(datetime.datetime.utcnow().strftime("%d-%b-%Y (%H:%M:%S.%f)"))
     sender_id: int
     receiver_id: int
 

@@ -100,6 +100,8 @@ Certificados certbot `/config/certbot/`
  * La documentación del diagrama UML se encuentra dentro de la carpeta /docs
  * La API externa que implementamos agrega la dirección a un lugar según las coordenadas, en "Tus Lugares".
  * Tenemos implementado el API gateway, pero algunas rutas no funcionan
- * Ejemplo de ruta que funciona: https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/externalapi/getstreet/-33.48817,-70.633865
+
+ * Ejemplo de ruta que funciona: https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/externalapi/getstreet/-33.48817,-70.633865
+
  * Ejemplo de ruta que no funciona: POST https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/auth/login
 
