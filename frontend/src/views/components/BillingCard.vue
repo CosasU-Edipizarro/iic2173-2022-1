@@ -3,31 +3,17 @@ export default {
   name: "BillingCard",
   data() {
     return {
-      locations: []
+      locations: [],
+      loadedAddress: false,
     };
   },
   async beforeMount() {
-    await this.getLocations()
-    .then(() => { this.getAddress(); });
-    // this.locations = this.fakeLocations();
+    this.getLocations().
+    then(() => {
+      this.getAddress();
+    });
   },
   methods: {
-    fakeLocations () {
-      return [
-        {
-          name: "Calle 1",
-          coords: "-34.6037,-58.3816"
-        },
-        {
-          name: "Calle 2",
-          coords: "-34.6037,-58.3816"
-        },
-        {
-          name: "Calle 3",
-          coords: "-34.6037,-58.3816"
-        },
-      ];
-    },
     async getLocations() {
       const token = this.$cookies.get("token");
       if (token) {
@@ -43,7 +29,6 @@ export default {
         .then(data => {
           console.log('Tus lugares:');
           console.log(data);
-          // this.locations.push(data);
           this.locations = data;
         })
         .catch(error => { console.log(error); alert(error) });
@@ -51,16 +36,21 @@ export default {
         alert("Debes iniciar sesión para acceder a esta página");
       }
     },
-    async getAddress() {
-      this.locations.forEach( async (user, index) => {
-        const coords = ''
-        await fetch(`${window.hostname}/externalapi/getstreet/${coords}`)
-          .then(response => response.json())
-          .then( data => {
-            console.log(data);
-            this.locations[index].address = data.data.address;
-            })
-      })
+    async getAddress(location, index) {
+      let coords = location.coords
+      coords = coords.replace(/\s/g, '')
+      console.log('COORDS:');
+      console.log(coords);
+      const URL = `${window.hostname}/externalapi/getstreet/${coords}`
+      console.log(URL);
+      await fetch(URL)
+        .then(response => response.json())
+        .then(data => {
+          console.log("RESPIESTA:");
+          console.log(data);
+          this.locations[index].address = data.data.address;
+          })
+        .then(() => { this.loadedAddress = true; });
     }
   }
 };
@@ -90,10 +80,11 @@ export default {
               Coordenadas:
               <span class="text-dark ms-sm-2 font-weight-bold"> {{ location.coords }}</span>
             </span>
-            <span class="mb-2 text-xs">
+            <span v-if="loadedAddress" class="mb-2 text-xs">
               Dirección:
               <span class="text-dark ms-sm-2 font-weight-bold"> {{ location.address }}</span>
             </span>
+            <button @click="getAddress(location, index)"> Actualizar dirección </button>
 
           </div>
           <!-- <div class="ms-auto text-end">

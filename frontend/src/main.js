@@ -8,8 +8,8 @@ import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
 
 // window.hostname = 'http://localhost'
-window.hostname = 'https://api.iic2173-g19.xyz'
-// window.hostname = 'https://letythd4le.execute-api.us-east-2.amazonaws.com'
+// window.hostname = 'https://api.iic2173-g19.xyz'
+window.hostname = 'https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test'
 
 
 createApp(App)
