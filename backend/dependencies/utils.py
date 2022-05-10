@@ -3,12 +3,13 @@ import re
 from uuid import uuid4 as uuid
 
 import bcrypt
-from fastapi import Header, HTTPException
+from fastapi import Header, HTTPException, Request, Depends
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-from db.models import ENV, Session, User, JWT, Location, Ping
-from db import schemas
+from db.models import ENV, Session, User, JWT, Location, Ping, get_db
+from db import schemas, crud
+from template.verificaition_email import TEMPLATE_EMAIL
 
 def generate_unique(req_type='hex') -> str:
     if req_type == 'str':
@@ -32,11 +33,12 @@ def verify_email(email: str) -> bool:
 
 def verify_password_hash(password: str, password_hash: str) -> bool:
     password = password.encode()
-    return bcrypt.check_password_hash(password_hash, password)
+    password_hash = password_hash.encode()
+    return bcrypt.checkpw(password, password_hash)
 
 
 def generate_password_hash(password: str) -> str:
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
 async def get_query_token(db: Session, token: str):
@@ -66,11 +68,23 @@ async def send_email(email: str, subject: str, content: str):
     except Exception as e:
         print(e.message)
 
-async def send_verification_email(email: str, token: str):
-    subject="Verifica tu correo"
-    content = f"""
-        <p>Verifica tu correo</p>
-        <a href="https://api.iic2173-g19.xyz" target="_blank">
-        <button>¡Verificar correo!</button>
-    """
+async def send_verification_email(db: Session, user_id:int, email: str, token: str):
+    user = crud.get_user(db, user_id)
+    subject="Bienvenido a GeoMeetr"
+    email_template = TEMPLATE_EMAIL
+    email_template = email_template.replace("USER_NAME", user.name)
+    email_template = email_template.replace("USER_EMAIL", user.email)
+    email_template = email_template.replace("USER_LINK", f"{ENV['URL_API']}/users/{user_id}/verify/{token}")
+    content = email_template
     await send_email(email=email, subject=subject , content=content)
+
+def get_user_by_token(request: Request, db: Session = Depends(get_db)):
+    token = request.headers.get("Authorization")
+    print(f'Token: {token}')
+    if not token:
+        raise HTTPException(status_code=401, detail="Token is missing")
+    query_token = db.query(JWT).filter(JWT.token == token).first()
+    if not query_token:
+        raise HTTPException(status_code=401, detail="Token is invalid")
+    user = query_token.user
+    return user

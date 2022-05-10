@@ -1,3 +1,59 @@
+<script>
+export default {
+  name: "ProjectsCard",
+  props: {
+    img: {
+      type: String,
+      default: ""
+    },
+    number: {
+      type: Number,
+      default: 0
+    },
+    title: {
+      type: String,
+      default: ""
+    },
+    description: {
+      type: String,
+      default: ""
+    },
+    imgTeam1: {
+      type: String,
+      default: ""
+    },
+    imgTeam2: {
+      type: String,
+      default: ""
+    },
+    imgTeam3: {
+      type: String,
+      default: ""
+    },
+    imgTeam4: {
+      type: String,
+      default: ""
+    },
+    titleTeam1: {
+      type: String,
+      default: ""
+    },
+    titleTeam2: {
+      type: String,
+      default: ""
+    },
+    titleTeam3: {
+      type: String,
+      default: ""
+    },
+    titleTeam4: {
+      type: String,
+      default: ""
+    },
+  },
+};
+</script>
+
 <template>
   <div class="card card-blog card-plain">
     <div class="position-relative">
@@ -55,59 +111,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "ProjectsCard",
-  props: {
-    img: {
-      type: String,
-      default: ""
-    },
-    number: {
-      type: Number,
-      default: 0
-    },
-    title: {
-      type: String,
-      default: ""
-    },
-    description: {
-      type: String,
-      default: ""
-    },
-    imgTeam1: {
-      type: String,
-      default: ""
-    },
-    imgTeam2: {
-      type: String,
-      default: ""
-    },
-    imgTeam3: {
-      type: String,
-      default: ""
-    },
-    imgTeam4: {
-      type: String,
-      default: ""
-    },
-    titleTeam1: {
-      type: String,
-      default: ""
-    },
-    titleTeam2: {
-      type: String,
-      default: ""
-    },
-    titleTeam3: {
-      type: String,
-      default: ""
-    },
-    titleTeam4: {
-      type: String,
-      default: ""
-    },
-  },
-};
-</script>

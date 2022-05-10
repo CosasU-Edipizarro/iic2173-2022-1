@@ -1,3 +1,4 @@
+import datetime
 from fastapi import HTTPException
 
 from db.models import Session, User, JWT, Location, Ping, VerificationEmail
@@ -30,10 +31,7 @@ def create_user(db: Session, user: schemas.UserCreate):
         username=user.username,
         email=user.email,
         phone=user.phone,
-        instagram=user.instagram,
-        sex=user.sex,
-        password=password_hash,
-        verified=False
+        password=password_hash
     )
     db.add(db_user)
     db.commit()
@@ -50,6 +48,9 @@ def get_user_locations(db: Session, user_id: int, skip: int = 0, limit: int = 10
 
 
 def create_user_location(db: Session, user_id: int, location: schemas.LocationCreate):
+    coordinates = f"{location.coords.split(',')[1].replace(' ', '')} {location.coords.split(',')[0].replace(' ', '')}"
+    coordinates = f"SRID=4326;POINT({coordinates})"
+    location.coords = coordinates
     new_location = Location(**location.dict(), user_id=user_id)
     db.add(new_location)
     db.commit()
@@ -90,9 +91,27 @@ def get_jwt(db: Session, user_id: int, user_password: str):
         raise HTTPException(status_code=401, detail="Wrong password")
 
 
+def get_jwt_by_username(db: Session, user_username: str, user_password: str):
+    user = db.query(User).filter(User.username == user_username).first()
+    if user == None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if utils.verify_password_hash(user_password, user.password):
+        if user.jwt != None: # Delete old jwt
+            db.query(JWT).filter(JWT.user_id == user.id).delete()
+            db.commit()
+        jwt = create_jwt(db, user.id)
+        return jwt
+    else:
+        raise HTTPException(status_code=401, detail="Wrong password")
+
+
 def get_user_pings_received(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     pings = db.query(Ping).filter(Ping.receiver_id == user_id).offset(skip).limit(limit).all()
-    return pings
+    senders = []
+    for ping in pings:
+        sender = db.query(User).filter(User.id == ping.sender_id).first()
+        senders.append(sender)
+    return senders
 
 
 def get_user_pings_sent(db: Session, user_id: int, skip: int = 0, limit: int = 100):
@@ -113,7 +132,7 @@ def create_verification_email(db: Session, user_id: int):
     user = db.query(User).filter(User.id == user_id).first()
     if user == None:
         raise HTTPException(status_code=404, detail="User not found")
-    if user.verified == False:
+    if user.verified == True:
         raise HTTPException(status_code=400, detail="User already verified")
     verification_email = db.query(VerificationEmail).filter(VerificationEmail.user_id == user_id).first()
     if verification_email != None:
@@ -123,3 +142,8 @@ def create_verification_email(db: Session, user_id: int):
     db.commit()
     db.refresh(verification_email)
     return verification_email
+
+
+def get_verification_email(db: Session, user_id: int, token: str):
+    return db.query(VerificationEmail
+        ).filter(VerificationEmail.user_id == user_id, VerificationEmail.token == token).first()

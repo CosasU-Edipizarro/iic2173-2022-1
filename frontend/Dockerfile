@@ -2,8 +2,11 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
-ADD . .
+COPY package.json yarn.lock ./
 
-RUN yarn && yarn build
+RUN yarn
+ADD . .
+RUN yarn build
+
 EXPOSE 8080
 CMD ["yarn", "preview"]

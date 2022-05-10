@@ -1,3 +1,9 @@
+<script>
+export default {
+  name: "CardTodo",
+};
+</script>
+
 <template>
   <div class="card bg-gradient-dark move-on-hover">
     <div class="card-body">
@@ -23,8 +29,3 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "CardTodo",
-};
-</script>

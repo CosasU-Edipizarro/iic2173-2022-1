@@ -1,34 +1,37 @@
 <template>
-  <sidenav
-    v-if="$store.state.showSidenav"
-    :custom_class="$store.state.mcolor"
-    :class="[
-      $store.state.isTransparent,
-      $store.state.isRTL ? 'fixed-end' : 'fixed-start',
-    ]"
-  />
-  <main
-    class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
-    :style="$store.state.isRTL ? 'overflow-x: hidden' : ''"
-  >
-    <!-- nav -->
-    <navbar
-      v-if="$store.state.showNavbar"
-      :class="[navClasses]"
-      :text-white="$store.state.isAbsolute ? 'text-white opacity-8' : ''"
-      :min-nav="navbarMinimize"
-    />
-    <router-view />
-    <app-footer v-show="$store.state.showFooter" />
-    <configurator
-      :toggle="toggleConfigurator"
+  <div>
+    <sidenav
+      v-if="$store.state.showSidenav"
+      :custom_class="$store.state.mcolor"
       :class="[
-        $store.state.showConfig ? 'show' : '',
-        $store.state.hideConfigButton ? 'd-none' : '',
+        $store.state.isTransparent,
+        $store.state.isRTL ? 'fixed-end' : 'fixed-start',
       ]"
     />
-  </main>
+    <main
+      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
+      :style="$store.state.isRTL ? 'overflow-x: hidden' : ''"
+    >
+      <!-- nav -->
+      <navbar
+        v-if="$store.state.showNavbar"
+        :class="[navClasses]"
+        :text-white="$store.state.isAbsolute ? 'text-white opacity-8' : ''"
+        :min-nav="navbarMinimize"
+      />
+      <router-view />
+      <app-footer v-show="$store.state.showFooter" />
+      <configurator
+        :toggle="toggleConfigurator"
+        :class="[
+          $store.state.showConfig ? 'show' : '',
+          $store.state.hideConfigButton ? 'd-none' : '',
+        ]"
+      />
+    </main>
+  </div>
 </template>
+
 <script>
 import Sidenav from "./examples/Sidenav/index.vue";
 import Configurator from "@/examples/Configurator.vue";

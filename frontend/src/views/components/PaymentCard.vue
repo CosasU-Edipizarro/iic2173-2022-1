@@ -1,3 +1,23 @@
+<script>
+import VsudButton from "@/components/VsudButton.vue";
+import img1 from "../../assets/img/logos/mastercard.png";
+import img2 from "../../assets/img/logos/visa.png";
+
+export default {
+  name: "PaymentCard",
+  components: {
+    VsudButton,
+  },
+  data() {
+    return {
+      img1,
+      img2,
+    };
+  },
+};
+</script>
+
+
 <template>
   <div class="card mt-4">
     <div class="card-header pb-0 p-3">
@@ -55,22 +75,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import VsudButton from "@/components/VsudButton.vue";
-import img1 from "../../assets/img/logos/mastercard.png";
-import img2 from "../../assets/img/logos/visa.png";
-
-export default {
-  name: "PaymentCard",
-  components: {
-    VsudButton,
-  },
-  data() {
-    return {
-      img1,
-      img2,
-    };
-  },
-};
-</script>

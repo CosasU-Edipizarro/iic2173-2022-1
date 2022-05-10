@@ -1,3 +1,15 @@
+<script>
+import setNavPills from "@/assets/js/nav-pills.js";
+
+export default {
+  name: "NavPill",
+  mounted() {
+    setNavPills();
+  },
+};
+</script>
+
+
 <template>
   <div class="nav-wrapper position-relative end-0">
     <ul class="nav nav-pills nav-fill p-1" role="tablist">
@@ -44,14 +56,3 @@
     </ul>
   </div>
 </template>
-
-<script>
-import setNavPills from "@/assets/js/nav-pills.js";
-
-export default {
-  name: "NavPill",
-  mounted() {
-    setNavPills();
-  },
-};
-</script>

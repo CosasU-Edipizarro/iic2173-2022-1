@@ -1,3 +1,14 @@
+<script>
+import VsudButton from "@/components/VsudButton.vue";
+
+export default {
+  name: "TransactionCard",
+  components: {
+    VsudButton,
+  },
+};
+</script>
+
 <template>
   <div class="card h-100 mb-4">
     <div class="card-header pb-0 px-3">
@@ -145,14 +156,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import VsudButton from "@/components/VsudButton.vue";
-
-export default {
-  name: "TransactionCard",
-  components: {
-    VsudButton,
-  },
-};
-</script>

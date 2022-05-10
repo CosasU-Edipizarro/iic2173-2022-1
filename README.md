@@ -4,12 +4,12 @@
 
 ## Información de la plataforma
 
-| Campo       | Valor                            |
-| ----------- | -------------------------------- |
-| IP API      | 3.136.190.174                    |
-| URL API     | https://api.iic2173-g19.xyz/     |
-| URL FRONT   | https://iic2173-g19.xyz/         |
-| Docs API    | https://api.iic2173-g19.xyz/docs |
+| Campo              | Valor                            |
+| ------------------ | -------------------------------- |
+| IP API             | 3.136.190.174                    |
+| URL API GATEWAY    | https://api.iic2173-g19.xyz/     |
+| URL FRONT          | https://iic2173-g19.xyz/         |
+| Docs API           | https://api.iic2173-g19.xyz/docs |
 
 ## Stack
 
@@ -72,6 +72,7 @@ El frontend está disponible en https://iic2173-g19.xyz/
   sudo docker-compose down
   sudo docker rm -f $(sudo docker ps -a -q)
   sudo docker volume rm $(sudo docker volume ls -q)
+  sudo docker image rm $(sudo docker image ls)
   sudo docker-compose up -d
   ```
 
@@ -84,3 +85,14 @@ El frontend está disponible en https://iic2173-g19.xyz/
 Variables de ambiente: `/config/environment/`
 Configuración Nginx: `/config/nginx/`
 Certificados certbot `/config/certbot/`
+
+
+## Consideraciones generales
+ * Una vez que te logeas, no puedes cerrar sesión por las cookies, mejor probar con ventanas en incognito.
+ * Es posible ingresar con un usuario que no existe (pero las cosas no funcionan).
+ * El formato de ubicación tiene que ser *latitud, longitud* , sino no se agrega bien la ubicacion.
+ * Si un usuario no tiene ubicaciones, se le pondra una por default en la UC.
+ * El perfil no es funcional todavia.
+ * Por ahora solo se pueden enviar pings y ver cuales te han enviado, pero no se pueden aceptar o rechazar.
+ * La documentación del diagrama UML se encuentra dentro de la carpeta /docs
+ * La API externa que implementamos agrega la dirección a un lugar según las coordenadas, en "Tus Lugares".

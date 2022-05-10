@@ -1,12 +1,10 @@
 import datetime
 from typing import Optional
 from pydantic import BaseModel as Base
-
+from geoalchemy2 import Geometry
 
 class JWTBase(Base):
     token: str
-    created: Optional[str] = datetime.datetime.utcnow().strftime("%d-%b-%Y (%H:%M:%S.%f)")
-    duration: Optional[int] = 3600
 
 
 class JWTCreate(JWTBase):
@@ -43,9 +41,6 @@ class UserBase(Base):
     username: str
     email: str
     phone: str
-    instagram: str
-    sex: str
-    verified: bool
 
 
 class UserCreate(UserBase):
@@ -54,6 +49,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
+    verified: bool
     # jwt: Optional[JWT]
     # locations: Optional[list[Location]]
 
@@ -63,7 +59,9 @@ class User(UserBase):
 
 class PingBase(Base):
     seen: bool
-    created_at: Optional[str] = datetime.datetime.utcnow().strftime("%d-%b-%Y (%H:%M:%S.%f)")
+    created_at: Optional[str] = str(datetime.datetime.utcnow().strftime("%d-%b-%Y (%H:%M:%S.%f)"))
+    sender_id: int
+    receiver_id: int
 
 
 class PingCreate(PingBase):
@@ -72,8 +70,6 @@ class PingCreate(PingBase):
 
 class Ping(PingBase):
     id: int
-    sender_id: int
-    receiver_id: int
 
     class Config:
         orm_mode = True
@@ -91,3 +87,25 @@ class VerificationEmail(VerificationEmailBase):
 
     class Config:
         orm_mode = True
+
+
+
+class CountBase(Base):
+    count: int
+
+class Count(CountBase):
+    pass
+
+
+# class LocationPointBase(Base):
+#     name: str
+#     coords: Types.Point
+
+
+# class LocationPointCreate(LocationPointBase):
+#     pass
+
+
+# class LocationPoint(LocationPointBase):
+#     id: int
+#     user_id: int

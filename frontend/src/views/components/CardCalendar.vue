@@ -1,3 +1,9 @@
+<script>
+export default {
+  name: "CardCalendar",
+};
+</script>
+
 <template>
   <div class="overflow-hidden card move-on-hover">
     <div class="card-body">
@@ -36,9 +42,3 @@
     </a>
   </div>
 </template>
-
-<script>
-export default {
-  name: "CardCalendar",
-};
-</script>

@@ -6,13 +6,15 @@
       </span>
       <input
         :id="id"
+        v-model="inputVal"
         :type="type"
         class="form-control"
         :class="getClasses(size, valid)"
         :name="name"
-        :value="value"
+        :value="modelValue"
         :placeholder="placeholder"
         :isRequired="isRequired"
+        @input="$emit('update:modelValue', $event.target.value)"
       />
       <span v-if="iconDir === 'right'" class="input-group-text">
         <i :class="getIcon(icon)"></i>
@@ -49,7 +51,7 @@ export default {
       type: String,
       default: ""
     },
-    value: {
+    modelValue: {
       type: String,
       default: ""
     },
@@ -63,6 +65,7 @@ export default {
     },
     isRequired: Boolean,
   },
+  emits: ['update:modelValue'],
   methods: {
     getClasses: (size, valid) => {
       let sizeValue, isValidValue;
@@ -75,6 +78,6 @@ export default {
     },
     getIcon: (icon) => (icon ? icon : null),
     hasIcon: (icon) => (icon ? "input-group" : null),
-  },
+  }
 };
 </script>

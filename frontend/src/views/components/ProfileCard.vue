@@ -1,3 +1,9 @@
+<script>
+export default {
+  name: "ProfileCard",
+};
+</script>
+
 <template>
   <div class="card h-100">
     <div class="p-3 pb-0 card-header">
@@ -62,9 +68,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "ProfileCard",
-};
-</script>

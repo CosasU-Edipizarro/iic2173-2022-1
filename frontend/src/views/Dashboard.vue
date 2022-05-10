@@ -1,49 +1,6 @@
 <template>
   <div class="py-4 container-fluid">
     <div class="row">
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <card
-          :title="stats.money.title"
-          :value="stats.money.value"
-          :percentage="stats.money.percentage"
-          :icon-class="stats.money.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <card
-          :title="stats.users.title"
-          :value="stats.users.value"
-          :percentage="stats.users.percentage"
-          :icon-class="stats.users.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <card
-          :title="stats.clients.title"
-          :value="stats.clients.value"
-          :percentage="stats.clients.percentage"
-          :icon-class="stats.clients.iconClass"
-          :icon-background="stats.iconBackground"
-          :percentage-color="stats.clients.percentageColor"
-          direction-reverse
-        ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0">
-        <card
-          :title="stats.sales.title"
-          :value="stats.sales.value"
-          :percentage="stats.sales.percentage"
-          :icon-class="stats.sales.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-lg-7 mb-lg-0 mb-4">
         <div class="card">
           <div class="card-body p-3">
@@ -57,9 +14,9 @@
                   </p>
                   <a
                     class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto"
-                    href="javascript:;"
+                    href="/#/sign-up"
                   >
-                    Leer más
+                    Únete a la comunidad
                     <i
                       class="fas fa-arrow-right text-sm ms-1"
                       aria-hidden="true"
@@ -122,17 +79,15 @@
         </div>
       </div>
     </div>
-    <div class="mt-4 row">
+    <!-- <div class="mt-4 row">
       <div class="mb-4 col-lg-5 mb-lg-0">
         <div class="card z-index-2">
           <div class="p-3 card-body">
-            <!-- chart -->
             <active-users-chart />
           </div>
         </div>
       </div>
       <div class="col-lg-7">
-        <!-- line chart -->
         <div class="card z-index-2">
           <gradient-line-chart />
         </div>
@@ -145,7 +100,7 @@
       <div class="col-lg-4 col-md-6">
         <Orders-card />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>

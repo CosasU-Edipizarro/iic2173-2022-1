@@ -1,3 +1,15 @@
+<script>
+import bgImg from '@/assets/img/curved-images/curved1.jpg'
+export default {
+  name: "CardPlayer",
+  data() {
+    return {
+      bgImg
+    }
+  },
+};
+</script>
+
 <template>
   <div
     class="card card-background card-background-mask-success move-on-hover align-items-start"
@@ -45,15 +57,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import bgImg from '@/assets/img/curved-images/curved1.jpg'
-export default {
-  name: "CardPlayer",
-  data() {
-    return {
-      bgImg
-    }
-  },
-};
-</script>

@@ -10,7 +10,7 @@
         to="/dashboard"
         v-bind="$attrs"
         :class="isBlur ? 'text-dark' : 'text-white'"
-      >Vite Soft UI Dashboard</router-link>
+      >GeoMeetr</router-link>
       <button
         class="navbar-toggler shadow-none ms-2"
         type="button"
@@ -43,23 +43,13 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link me-2" to="/profile">
-              <i
-                class="fa fa-user opacity-6 me-1"
-                aria-hidden="true"
-                :class="isBlur ? 'text-dark' : 'text-white'"
-              ></i>
-              Profile
-            </router-link>
-          </li>
-          <li class="nav-item">
             <router-link class="nav-link me-2" to="/sign-up">
               <i
                 class="fas fa-user-circle opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Sign Up
+              Registrarse
             </router-link>
           </li>
           <li class="nav-item">
@@ -69,17 +59,8 @@
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Sign In
+              Ingresar
             </router-link>
-          </li>
-        </ul>
-        <ul class="navbar-nav d-lg-block d-none">
-          <li class="nav-item">
-            <a
-              href="https://www.creative-tim.com/product/vue-soft-ui-dashboard"
-              class="btn btn-sm btn-round mb-0 me-1"
-              :class="isBlur ? 'bg-gradient-dark' : 'bg-gradient-success'"
-            >Free download</a>
           </li>
         </ul>
       </div>

@@ -1,3 +1,10 @@
+<script>
+export default {
+  name: "CardEmail",
+};
+</script>
+
+
 <template>
   <div class="mt-4 card move-on-hover">
     <div class="card-body">
@@ -16,9 +23,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "CardEmail",
-};
-</script>

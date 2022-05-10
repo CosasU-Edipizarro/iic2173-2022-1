@@ -6,7 +6,8 @@ def db_init(DB_URI, DEBUG=False):
 
     # Create engine
     # engine = create_engine(DB_URI, pool_size=200, pool_recycle=280, max_overflow=-1)
-    engine = create_engine(DB_URI, echo=DEBUG)
+    # engine = create_engine(DB_URI, echo=DEBUG)
+    engine = create_engine(DB_URI, echo=False)
     Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base = declarative_base()
 

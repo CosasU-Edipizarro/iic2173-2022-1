@@ -1,3 +1,14 @@
+<script>
+import VsudButton from "@/components/VsudButton.vue";
+
+export default {
+  name: "InvoiceCard",
+  components: {
+    VsudButton,
+  },
+};
+</script>
+
 <template>
   <div class="card h-100 mt-4">
     <div class="card-header pb-0 p-3">
@@ -84,14 +95,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import VsudButton from "@/components/VsudButton.vue";
-
-export default {
-  name: "InvoiceCard",
-  components: {
-    VsudButton,
-  },
-};
-</script>

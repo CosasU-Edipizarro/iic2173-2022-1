@@ -9,8 +9,8 @@ router = APIRouter(prefix="/auth")
 
 @router.post("/login", response_model=schemas.JWT)
 async def create_jwt_for_user(
-    user_id: int,
-    user_password: str,
+    username: str,
+    password: str,
     db: Session = Depends(get_db)
 ) -> schemas.JWT:
-    return crud.get_jwt(db=db, user_id=user_id, user_password=user_password)
+    return crud.get_jwt_by_username(db=db, user_username=username, user_password=password)

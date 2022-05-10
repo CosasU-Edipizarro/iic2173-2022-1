@@ -7,6 +7,8 @@ import Profile from "@/views/Profile.vue";
 import Rtl from "@/views/Rtl.vue";
 import SignIn from "@/views/SignIn.vue";
 import SignUp from "@/views/SignUp.vue";
+import Maps from "@/views/Maps.vue";
+import Userlist from "@/views/Userlist.vue";
 
 const routes = [
   {
@@ -53,6 +55,16 @@ const routes = [
     path: "/sign-up",
     name: "Sign Up",
     component: SignUp,
+  },
+  {
+    path: "/maps",
+    name: "Maps",
+    component: Maps,
+  },
+  {
+    path: "/userlist",
+    name: "Userlist",
+    component: Userlist,
   },
 ];
 
