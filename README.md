@@ -7,7 +7,8 @@
 | Campo              | Valor                            |
 | ------------------ | -------------------------------- |
 | IP API             | 3.136.190.174                    |
-| URL API GATEWAY    | https://api.iic2173-g19.xyz/     |
+| URL API            | https://api.iic2173-g19.xyz/     |
+| URL API GATEWAY    | https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/     |
 | URL FRONT          | https://iic2173-g19.xyz/         |
 | Docs API           | https://api.iic2173-g19.xyz/docs |
 
@@ -98,4 +99,7 @@ Certificados certbot `/config/certbot/`
  * Por ahora solo se pueden enviar pings y ver cuales te han enviado, pero no se pueden aceptar o rechazar.
  * La documentación del diagrama UML se encuentra dentro de la carpeta /docs
  * La API externa que implementamos agrega la dirección a un lugar según las coordenadas, en "Tus Lugares".
+ * Tenemos implementado el API gateway, pero algunas rutas no funcionan
+ * Ejemplo de ruta que funciona: https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/externalapi/getstreet/-33.48817,-70.633865
+ * Ejemplo de ruta que no funciona: POST https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/auth/login
 
