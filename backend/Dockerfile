@@ -3,7 +3,7 @@
 ###########
 
 # pull official base image
-FROM python:3.9 as builder
+FROM python:3.9.13-slim as builder
 
 # set work directory
 WORKDIR /usr/src/app
@@ -11,6 +11,8 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && apt-get install -y iputils-ping
 
 # lint
 RUN pip install --upgrade pip
@@ -28,8 +30,8 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 #########
 
 # pull official base image
-FROM python:3.9
-
+FROM python:3.9.13-slim
+RUN apt-get update && apt-get install -y iputils-ping curl telnet
 # create directory for the app user
 # RUN mkdir -p /home/g19
 
@@ -59,5 +61,4 @@ RUN chown -R g19:g19 $APP_HOME
 # change to the app user
 USER g19
 
-# Run app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

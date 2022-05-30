@@ -10,7 +10,7 @@ def drop_tables():
     Base.metadata.drop_all(bind=engine)
 
 def db_migration():
-    if ENV['DB_DROP']:
+    if ENV['DB_DROP'] and ENV['CELERY'] != True:
         drop_tables()
-    if ENV['DB_CREATE']:
+    if ENV['DB_CREATE'] and ENV['CELERY'] != True:
         create_tables()

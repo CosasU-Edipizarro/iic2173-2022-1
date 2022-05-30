@@ -1,6 +1,7 @@
 <template>
   <div>
     <sidenav
+      v-show="logged"
       v-if="$store.state.showSidenav"
       :custom_class="$store.state.mcolor"
       :class="[
@@ -45,6 +46,12 @@ export default {
     Configurator,
     Navbar,
     AppFooter,
+  },
+
+  data(){
+    return {
+      logged: $cookies.get( 'user_id' ) !== null
+    }
   },
 
   computed: {

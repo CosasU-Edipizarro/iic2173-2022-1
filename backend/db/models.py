@@ -2,7 +2,7 @@ import datetime
 from email.policy import default
 from operator import index
 
-from sqlalchemy import Column, Integer, Boolean, DateTime, Date, ForeignKey, Text
+from sqlalchemy import Column, Integer, Float, Boolean, DateTime, Date, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry, Geography
 
@@ -22,10 +22,13 @@ Base = db['Base']
 
 # Dependency
 def get_db():
+    print("get_db(): Starting")
     db = Session()
     try:
+        print("get_db(): Yielding")
         yield db
     finally:
+        print("get_db(): Closing")
         db.close()
 
 
@@ -34,14 +37,15 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer(), primary_key=True, index=True)
-    name = Column(Text(), nullable=False)
-    username = Column(Text(), unique=True, nullable=False)
-    email = Column(Text(), unique=True, nullable=False)
-    phone = Column(Text(), unique=True)
-    password = Column(Text(), nullable=False)
-    verified = Column(Boolean(), default=False)
+    auth_id = Column(Integer(), nullable=False)
+    # name = Column(Text(), nullable=False)
+    # username = Column(Text(), unique=True, nullable=False)
+    # email = Column(Text(), unique=True, nullable=False)
+    # phone = Column(Text(), unique=True)
+    # password = Column(Text(), nullable=False)
+    # verified = Column(Boolean(), default=False)
 
-    jwt = relationship("JWT", back_populates="user", uselist=False)
+    # jwt = relationship("JWT", back_populates="user", uselist=False)
     locations = relationship("Location", back_populates="user")
 
 
@@ -52,21 +56,21 @@ class Location(Base):
     id = Column(Integer(), primary_key=True, index=True)
     name = Column(Text(), nullable=False)
     coords = Column(Geometry(geometry_type='POINT', srid=4326))
-    # coords = Column(Geography(geometry_type='POINT', srid=4326))
+    tag = Column(Text(), nullable=False)
 
     user_id = Column(Integer(), ForeignKey('users.id'), index=True)
     user = relationship("User", back_populates="locations")
 
 
-class JWT(Base):
+# class JWT(Base):
 
-    __tablename__ = 'jwts'
+#     __tablename__ = 'jwts'
 
-    id = Column(Integer, primary_key=True, index=True)
-    token = Column(Text(), nullable=False, index=True)
+#     id = Column(Integer, primary_key=True, index=True)
+#     token = Column(Text(), nullable=False, index=True)
 
-    user_id = Column(Integer(), ForeignKey('users.id'), index=True)
-    user = relationship("User", back_populates="jwt")
+#     user_id = Column(Integer(), ForeignKey('users.id'), index=True)
+#     user = relationship("User", back_populates="jwt")
 
 
 class Ping(Base):
@@ -77,14 +81,17 @@ class Ping(Base):
 
     sender_id = Column(Integer(), ForeignKey('users.id'), index=True)
     receiver_id = Column(Integer(), ForeignKey('users.id'), index=True)
+    sidi = Column(Float(), default=0)
+    siin = Column(Float(), default=0)
+    dindin = Column(Float(), default=0)
 
 
-class VerificationEmail(Base):
+# class VerificationEmail(Base):
 
-    __tablename__ = 'verification_emails'
+#     __tablename__ = 'verification_emails'
 
-    id = Column(Integer, primary_key=True, index=True)
-    token = Column(Text(), nullable=False, index=True)
+#     id = Column(Integer, primary_key=True, index=True)
+#     token = Column(Text(), nullable=False, index=True)
 
-    user_id = Column(Integer(), ForeignKey('users.id'), index=True)
-    user = relationship("User")
+#     user_id = Column(Integer(), ForeignKey('users.id'), index=True)
+#     user = relationship("User")

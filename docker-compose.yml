@@ -1,58 +1,171 @@
 version: '3.9'
 
 services:
-  db:
-    image: postgis/postgis
-    restart: always
-    volumes:
-      - database_data:/var/lib/postgresql/data/
-    networks:
-      - database_network
-    env_file:
-      - ./config/environment/.env.db
 
-  backend:
-    build: ./backend
-    restart: always
-    expose:
-      - 8000
-    networks:
-      - nginx_network
-      - database_network
-    env_file:
-      - ./config/environment/.env.back
-    depends_on:
-      - db
-
-  nginx:
-    image: nginx
-    restart: always
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./config/nginx/production:/etc/nginx/conf.d
-      - ./config/certbot/conf:/etc/letsencrypt
-      - ./config/certbot/www:/var/www/certbot
-    depends_on:
-      - backend
-    networks:
-      - nginx_network
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  ##############################
+  #     Certbot Environment    #
+  ##############################
 
   certbot:
+    container_name: certbot
     image: certbot/certbot
     restart: unless-stopped
     volumes:
       - ./config/certbot/conf:/etc/letsencrypt
       - ./config/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - nginx_network
+
+  ##############################
+  #        Global NGINX        #
+  ##############################
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/nginx/production/global:/etc/nginx/conf.d
+      - ./config/certbot/conf:/etc/letsencrypt
+      - ./config/certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+      - authentication
+      - flower
+    networks:
+      - nginx_network
+
+  ##############################
+  #   Application Environment  #
+  ##############################
+
+  db:
+    container_name: db
+    image: postgis/postgis
+    restart: unless-stopped
+    volumes:
+      - database_data:/var/lib/postgresql/data/
+    networks:
+      - app_db_network
+    env_file:
+      - ./config/environment/.env.db
+
+  backend:
+    container_name: backend
+    build: ./backend
+    restart: unless-stopped
+    command:  uvicorn main:app --host 0.0.0.0 --port 8000
+    expose:
+      - 8000
+    volumes:
+      - .:/app
+    networks:
+      - nginx_network
+      - app_network
+      - app_db_network
+    env_file:
+      - ./config/environment/.env.back
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    container_name: redis
+    image: redis:7.0.0-alpine
+    restart: unless-stopped
+    networks:
+      - app_network
+    expose:
+      - 6379
+
+  celery_worker:
+    container_name: celery
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      - CELERY=True
+    command: celery --app=main.celery worker --loglevel=info --queues=hello_world
+    volumes:
+      - .:/app
+    networks:
+      - app_network
+    env_file:
+      - ./config/environment/.env.back
+    depends_on:
+      - backend
+      - redis
+
+  flower:
+    container_name: flower
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      - CELERY=True
+    command: celery --app=main.celery flower --port=5555
+    expose:
+      - 5555
+    volumes:
+      - .:/app
+    networks:
+      - nginx_network
+      - app_network
+    env_file:
+      - ./config/environment/.env.back
+    depends_on:
+      - backend
+      - redis
+      - celery_worker
+
+
+  ##############################
+  # Authentication Environment #
+  ##############################
+
+  db_auth:
+    container_name: db_auth
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - database_auth_data:/var/lib/postgresql/data_auth/
+    networks:
+      - auth_db_network
+    env_file:
+      - ./config/environment/.env.db_auth
+    expose:
+      - 5433
+
+  authentication:
+    container_name: authentication
+    build: ./authentication
+    restart: unless-stopped
+    command:  uvicorn main:app --host 0.0.0.0 --port 8000
+    expose:
+      - 8000
+    volumes:
+      - .:/app
+    networks:
+      - nginx_network
+      - auth_db_network
+    env_file:
+      - ./config/environment/.env.auth
+    depends_on:
+      - db_auth
 
 networks:
   nginx_network:
     driver: bridge
-  database_network:
+  app_network:
+    driver: bridge
+  app_db_network:
+    driver: bridge
+  auth_db_network:
     driver: bridge
 
 volumes:
   database_data:
+  database_auth_data:
+  app:

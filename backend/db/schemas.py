@@ -3,25 +3,30 @@ from typing import Optional
 from pydantic import BaseModel as Base
 from geoalchemy2 import Geometry
 
-class JWTBase(Base):
-    token: str
+
+class TokenBase(Base):
+    access_token: str
+    token_type: str
+
+# class JWTBase(Base):
+#     token: str
 
 
-class JWTCreate(JWTBase):
-    pass
+# class JWTCreate(JWTBase):
+#     pass
 
+# class JWT(JWTBase):
+#     id: int
+#     user_id: int
 
-class JWT(JWTBase):
-    id: int
-    user_id: int
-
-    class Config:
-        orm_mode = True
+#     class Config:
+#         orm_mode = True
 
 
 class LocationBase(Base):
     name: str
     coords: str
+    tag: str
 
 
 class LocationCreate(LocationBase):
@@ -44,17 +49,12 @@ class UserBase(Base):
 
 
 class UserCreate(UserBase):
-    password: str
+    hashed_password: str
 
 
 class User(UserBase):
     id: int
     verified: bool
-    # jwt: Optional[JWT]
-    # locations: Optional[list[Location]]
-
-    class Config:
-        orm_mode = True
 
 
 class PingBase(Base):
@@ -68,42 +68,36 @@ class PingCreate(PingBase):
 
 class Ping(PingBase):
     id: int
+    sidi: float
+    siin: float
+    dindin: float
 
     class Config:
         orm_mode = True
 
 
-class VerificationEmailBase(Base):
+# class VerificationEmailBase(Base):
+#     pass
+
+# class VerificationEmailCreate(VerificationEmailBase):
+#     pass
+
+# class VerificationEmail(VerificationEmailBase):
+#     id: int
+#     user_id: int
+
+#     class Config:
+#         orm_mode = True
+
+class UserLoginBase(Base):
+    username: str
+    password: str
+
+class UserLogin(UserLoginBase):
     pass
-
-class VerificationEmailCreate(VerificationEmailBase):
-    pass
-
-class VerificationEmail(VerificationEmailBase):
-    id: int
-    user_id: int
-
-    class Config:
-        orm_mode = True
-
-
 
 class CountBase(Base):
     count: int
 
 class Count(CountBase):
     pass
-
-
-# class LocationPointBase(Base):
-#     name: str
-#     coords: Types.Point
-
-
-# class LocationPointCreate(LocationPointBase):
-#     pass
-
-
-# class LocationPoint(LocationPointBase):
-#     id: int
-#     user_id: int

@@ -43,15 +43,30 @@ export default {
     async submitSignin () {
       const username = this.user.username;
       const password = this.user.password;
-      await fetch(`${window.hostname}/auth/login?username=${username}&password=${password}`,{
-        method: 'POST'
+      await fetch(`${window.hostname}/auth/login`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "username": username, "password": password })
       })
       .then(response => response.json())
-      .then( (data) => { 
+      .then( (data) => {
         console.log(data);
-        this.$cookies.set('token', data.token, { maxAge: 60 * 60 * 24 * 7 });
-        this.$cookies.set('user_id', data.user_id, { maxAge: 60 * 60 * 24 * 7 });
+        this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
+        return fetch(`${window.hostname}/users/user` , {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
+            }
+        })
       })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.$cookies.set('user_id', data["user_id"], { maxAge: 60 * 60 * 24 * 7 });
+      }) 
       .then(() => { this.checkIfToken(); })
     },
 

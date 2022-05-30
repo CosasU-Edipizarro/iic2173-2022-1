@@ -1,55 +1,154 @@
 version: '3.9'
 
 services:
+
+  ##############################
+  # Authentication Environment #
+  ##############################
+
+  nginx_app:
+    image: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - ./config/nginx/development/app:/etc/nginx/conf.d
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
   db:
     image: postgis/postgis
     volumes:
       - database_data:/var/lib/postgresql/data/
     networks:
-      - database_network
+      - app_db_network
     env_file:
       - ./config/environment/.env.db
 
   backend:
     build: ./backend
+    command:  uvicorn main:app --host 0.0.0.0 --port 8000
     expose:
       - 8000
+    volumes:
+      - .:/app
     networks:
-      - database_network
-      - nginx_network
+      - app_network
+      - app_db_network
     env_file:
       - ./config/environment/.env.back
     depends_on:
       - db
+      - redis
 
   frontend:
     build: ./frontend
+    command: yarn preview --port 3000
     ports:
-      - 8080:8080
+      - 3000:3000
     networks:
-      - nginx_network
+      - app_network
     env_file:
       - ./config/environment/.env.front
     depends_on:
       - backend
 
-  nginx:
-    # build: ./config/nginx
-    image: nginx
-    ports:
-      - 80:80
+  redis:
+    container_name: redis
+    image: redis:7.0.0-alpine
+    networks:
+      - app_network
+    expose:
+      - 6379
+
+  # Celery worker to run threads on other server
+  celery_worker:
+    build: ./backend
+    environment:
+      - CELERY=True
+    command: celery --app=main.celery worker --loglevel=info --queues=hello_world
     volumes:
-      - ./config/nginx/development:/etc/nginx/conf.d
+      - .:/app
+    networks:
+      - app_network
+    env_file:
+      - ./config/environment/.env.back
     depends_on:
       - backend
+      - redis
+
+  flower:
+    build: ./backend
+    environment:
+      - CELERY=True
+    command: celery --app=main.celery flower --port=5555
+    expose:
+      - 5555
+    volumes:
+      - .:/app
     networks:
-      - nginx_network
+      - app_network
+    env_file:
+      - ./config/environment/.env.back
+    depends_on:
+      - backend
+      - redis
+      - celery_worker
+
+
+  ##############################
+  # Authentication Environment #
+  ##############################
+
+  nginx_auth:
+    image: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./config/nginx/development/auth:/etc/nginx/conf.d
+    depends_on:
+      - authentication
+    networks:
+      - auth_network
+
+  db_auth:
+    image: postgres
+    volumes:
+      - database_auth_data:/var/lib/postgresql/data_auth/
+    networks:
+      - auth_db_network
+    env_file:
+      - ./config/environment/.env.db_auth
+    expose:
+      - 5433
+
+  authentication:
+    build: ./authentication
+    command:  uvicorn main:app --host 0.0.0.0 --port 8000
+    expose:
+      - 8000
+    volumes:
+      - .:/app
+    networks:
+      - auth_network
+      - auth_db_network
+    env_file:
+      - ./config/environment/.env.auth
+    depends_on:
+      - db_auth
 
 networks:
-  nginx_network:
+  app_network:
     driver: bridge
-  database_network:
+  app_db_network:
+    driver: bridge
+  auth_network:
+    driver: bridge
+  auth_db_network:
     driver: bridge
 
 volumes:
   database_data:
+  database_auth_data:
+  app:

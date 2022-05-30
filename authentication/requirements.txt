@@ -1,0 +1,23 @@
+# App
+fastapi==0.76.0
+uvicorn[standard]==0.17.6
+pydantic
+
+# DB
+GeoAlchemy2==0.11.1
+psycopg2-binary
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+
+# Celery
+celery
+flower
+redis
+
+# Email
+sendgrid==6.9.7
+
+# Others
+bcrypt==3.2.2
+requests

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Header
-from db.models import ENV, Session, get_db, JWT, User
+from db.models import ENV, Session, get_db, User
 from db import schemas, crud
 from dependencies import utils
 import requests

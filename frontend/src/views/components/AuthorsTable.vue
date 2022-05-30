@@ -41,16 +41,58 @@ export default {
     async getUserPings() {
       const token = this.$cookies.get("token");
       if (token) {
-        const user_id = this.$cookies.get("user_id"); 
-        await fetch( `${window.hostname}/pings/${user_id}` )
+        const user_id = this.$cookies.get("user_id");
+        await fetch( `${window.hostname}/pings/received/${user_id}` )
           .then( response => response.json() )
-          .then( data => { this.senders = data } )
+          .then( data => { this.senders = data; console.log("SENDERS"); console.log(this.senders) } )
           .then( () => { this.loaded = true; } )
           .catch( error => console.log( error ) );
       } else {
         alert("Debes iniciar sesión para acceder a esta página");
       }
     },
+    //
+    /*
+    async acceptPing(_id) {
+      const token = this.$cookies.get("token");
+      if (token) {
+        const user_id = this.$cookies.get("user_id");
+        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          },
+        })
+        .then(response => response.json())
+        .then(() => {
+          alert('Ping enviado correctamente');
+        })
+        .catch(error => { console.log(error); alert(error) });
+      } else {
+        alert("Debes iniciar sesión para acceder a esta página");
+      }
+    }
+    async denyPing(_id) {
+      const token = this.$cookies.get("token");
+      if (token) {
+        const user_id = this.$cookies.get("user_id");
+        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
+          method: "POST",//su DELETE
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          },
+        })
+        .then(response => response.json())
+        .then(() => {
+          alert('Ping enviado correctamente');
+        })
+        .catch(error => { console.log(error); alert(error) });
+      } else {
+        alert("Debes iniciar sesión para acceder a esta página");
+      }
+    }*/
   },
 };
 </script>
@@ -60,7 +102,17 @@ export default {
     <thead>
       <tr>
         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+          Índice SIDI
+        </th>
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+          Índice SIIN
+        </th>
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+          Índice DINDIN
+        </th>
       </tr>
+      
     </thead>
     <tbody>
       <tr v-for="user in senders" :key="user">
@@ -76,12 +128,22 @@ export default {
           </div>
         </td>
 
+        <td class="align-middle text-center">
+          <span class="text-secondary text-xs font-weight-bold">sidi</span>
+        </td>
+        <td class="align-middle text-center">
+          <span class="text-secondary text-xs font-weight-bold">siin</span>
+        </td>
+        <td class="align-middle text-center">
+          <span class="text-secondary text-xs font-weight-bold">dindin</span>
+        </td>
+
         <td class="align-middle text-center text-sm">
           <button type="button" class="btn btn-outline-success btn-sm">Aceptar</button>
         </td>
         
         <td class="align-middle">
-          <a class="mb-0 btn btn-link pe-3 ps-0 ms-auto" href="javascript:;">Rechazar</a>
+          <button type="button" class="mb-0 btn btn-link pe-3 ps-0 ms-auto" href="javascript:;">Rechazar</button>
         </td>
       </tr>
     </tbody>

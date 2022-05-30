@@ -8,5 +8,5 @@ RUN yarn
 ADD . .
 RUN yarn build
 
-EXPOSE 8080
-CMD ["yarn", "preview"]
+# EXPOSE 8080
+# CMD ["yarn", "preview"]

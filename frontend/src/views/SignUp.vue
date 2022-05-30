@@ -18,7 +18,7 @@ export default {
         username: '',
         email: '',
         phone: '',
-        password: ''
+        hashed_password: ''
       }
     }
   },
@@ -37,6 +37,8 @@ export default {
   methods: {
     async submitSignup() {
       const data = this.user;
+      console.log(data)
+      console.log(JSON.stringify(data))
       await fetch(`${window.hostname}/users` , {
         method: 'POST',
         mode: 'cors',
@@ -46,10 +48,25 @@ export default {
         body: JSON.stringify(data)
       })
       .then(response => response.json())
-      .then(data => console.log(data))
-      .then(() => { 
+      .then(data => {
+        console.log(data);
+        this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
+        return fetch(`${window.hostname}/users/user` , {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
+            }
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.$cookies.set('user_id', data["user_id"], { maxAge: 60 * 60 * 24 * 7 });
+      })
+      .then(() => {
         alert('Usuario creado correctamente');
-        this.$router.push('/sign-in');
+        this.$router.push('/dashboard');
       })
       .catch(error => { console.log(error); alert(error) });
     }
@@ -101,7 +118,7 @@ export default {
                   <vsud-input v-model="user.phone" type="text" placeholder="Teléfono" aria-label="Phone" />
                 </div>
                 <div class="mb-3">
-                  <vsud-input v-model="user.password" type="password" placeholder="Contraseña" aria-label="Password" />
+                  <vsud-input v-model="user.hashed_password" type="password" placeholder="Contraseña" aria-label="Password" />
                 </div>
 
                 <div class="text-center">

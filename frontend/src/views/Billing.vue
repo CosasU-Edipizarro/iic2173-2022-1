@@ -13,6 +13,7 @@ export default {
   },
   data() {
     return {
+      tags: ['Entretención', 'Deporte', 'Arte', 'Historia', 'Música', 'Comida', 'Animales', 'Eventos', 'Académico', 'Familia'],
       location: {
         name: "",
         coords: "",
@@ -103,6 +104,12 @@ export default {
         <vsud-input v-model="location.name" type="text" placeholder="Avenida..." name="name" />
         <label>Coordenadas</label>
         <vsud-input v-model="location.coords" type="text" placeholder="Latitud, Longitud" name="coords" />
+        <label>Etiqueta</label>
+        <select id="tag" class="form-select" placeholder="Entretención">
+          <option v-for="tag in tags" :key="tag" :value="tag" class="col-12 col-md-3 col-xl-4 pb-6 min-height-300">
+            {{ tag }}
+          </option>
+        </select>
         <button type="button" class="mb-0 btn btn-outline-success btn-sm" @click="createLocation">Añadir lugar</button>
       </div>
     </div>

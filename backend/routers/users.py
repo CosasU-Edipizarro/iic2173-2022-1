@@ -1,46 +1,69 @@
+import os
 from gzip import READ
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from db.models import ENV, Session, get_db, User, Location
 from db import schemas, crud
 from dependencies import utils
 from geoalchemy2 import functions
 from sqlalchemy import func
+import json 
+
+import requests
 
 router = APIRouter(prefix="/users")
 
 
-@router.post("/", response_model=schemas.User)
+@router.post("/", response_model=schemas.TokenBase)
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    found_user = crud.get_user_by_email(db, email=user.email)
-    if found_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    found_user = crud.get_user_by_username(db, username=user.username)
-    if found_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    user_creado= crud.create_user(db=db, user=user)
-    verification_email = crud.create_verification_email(db,user_creado.id)
-    await utils.send_verification_email(db, user_creado.id, user_creado.email,verification_email.token)
-    await utils.send_verification_email(db, user_creado.id, 'ignacio.pasten2@gmail.com', verification_email.token)       
-    return user_creado
+    try:
+        print("POST /users/")
+        print(user)
+        data = {
+            "name": user.name,
+            "username": user.username,
+            "email": user.email,
+            "phone": user.phone,
+            "hashed_password": user.hashed_password
+        }
 
-@router.get("/{user_id}/verify/{token}")
-def confirm_verification(user_id: int, token: str, db: Session = Depends(get_db)) -> dict:
-    print("confirm_verification")
-    vertification_email = crud.get_verification_email(db, user_id, token)
-    if not vertification_email:
-        raise HTTPException(status_code=400, detail="Invalid token")
-    vertification_email.verified = True
-    db.commit()
-    return {"status": "ok"}
+        data = json.dumps(data, indent = 4)
+        headers = {"Content-Type": "application/json"}
+        proxies = { "http": ENV['URL_AUTH'] }
+        request_session = requests.post(ENV['URL_AUTH']+"/users", data=data, headers=headers, proxies=proxies)
+        response_token = request_session.json()
+        
+        jwt_data = crud.jwt_decode(response_token["access_token"])
+        print(jwt_data)
+
+        found_user = crud.get_user_by_auth_id(db, auth_id=int(jwt_data["sub"]))
+        if found_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+
+        user_creado = crud.create_user(db=db, auth_id=int(jwt_data["sub"]))
+
+        return response_token
+    except Exception as exception:
+        print("Error en POST /users/")
+        print(exception)
+        raise HTTPException(status_code=400, detail="An error has ocurred")
 
 @router.get("/", response_model=list[schemas.User])
-def read_users(
+async def read_users(
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db)
 ) -> list[schemas.User]:
-    print("ENTRANDO A /USERS")
-    users = crud.get_users(db, skip=skip, limit=limit)
+    print("ENTRANDO A /users")
+    print(f"URL TO GET DATA: {ENV['URL_AUTH']+'/users'}")
+
+    headers={'Content-Type': 'application/json'}
+    proxies = { "http": ENV['URL_AUTH'] }
+    request_session = requests.get(ENV['URL_AUTH']+"/users", headers=headers, proxies=proxies)
+    print("GET /users/: Justo después del request")
+
+    users = request_session.json()
+
+    # users = crud.get_users(db, skip=skip, limit=limit)
     print(users)
     return users
 
@@ -52,14 +75,24 @@ async def read_user(user_id: int, db: Session = Depends(get_db)) -> schemas.User
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+@router.get("/user", response_model=schemas.User)
+async def read_user_from_jwt(request: Request, db: Session = Depends(get_db)) -> schemas.User:
+    token = request.headers.get('Authorization')
+    print(token)
+    print("ENTRANDO A GET USER BY TOKEN")
+    db_user = crud.get_user_by_token(db, token)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
+
 
 @router.post("/{user_id}/locations", response_model=schemas.Location)
 async def create_location_for_user(
-    location: schemas.LocationCreate,
-    user: User = Depends(utils.get_user_by_token), 
+    user_id: int,
+    location: schemas.LocationCreate, 
     db: Session = Depends(get_db)
 ):
-    temp = crud.create_user_location(db=db, user_id=user.id, location=location)
+    temp = crud.create_user_location(db=db, user_id=user_id, location=location)
     # temp.coords = f"{func.st_y(temp.coords)}, {func.st_x(temp.coords)}"
     temp.coords = str(functions.ST_AsText(temp.coords))
     return temp

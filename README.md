@@ -76,6 +76,7 @@ Para replicar el pipe CI/CD se tienen que copiar los achivos que se encuentran e
   sudo docker rm -f $(sudo docker ps -a -q)
   sudo docker volume rm $(sudo docker volume ls -q)
   sudo docker image rm $(sudo docker image ls)
+  sudo docker-compose build
   sudo docker-compose up -d
   ```
 

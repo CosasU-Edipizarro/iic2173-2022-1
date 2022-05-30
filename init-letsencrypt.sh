@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(api.iic2173-g19.xyz www.api.iic2173-g19.xyz)
+domains=(api.iic2173-g19.xyz www.api.iic2173-g19.xyz flower.iic2173-g19.xyz www.flower.iic2173-g19.xyz auth.iic2173-g19.xyz www.auth.iic2173-g19.xyz)
 rsa_key_size=4096
 data_path="./config/certbot"
 email="edipizarro@uc.cl" # Adding a valid address is strongly recommended

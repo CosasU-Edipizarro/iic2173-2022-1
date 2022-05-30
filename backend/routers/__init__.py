@@ -1,4 +1,4 @@
-from routers import auth, locations, users, pings, protected, emails, count, externalapi
+from routers import auth, locations, users, pings, protected, count, externalapi
 
 routers = {
     "auth": auth.router,
@@ -6,7 +6,6 @@ routers = {
     "users": users.router,
     "pings": pings.router,
     "protected": protected.router,
-    "emails": emails.router,
     "count": count.router,
     "externalapi": externalapi.router
 }

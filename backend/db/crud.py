@@ -1,37 +1,41 @@
 import datetime
 from fastapi import HTTPException
 
-from db.models import Session, User, JWT, Location, Ping, VerificationEmail
+from db.models import Session, User, Location, Ping
 from db import schemas
 from dependencies import utils
+from jose import JWTError, jwt
+
+SECRET_KEY = "b75f0e58f700478526706d771021c3a057fa9118d2c0166adb05e00cb55b93c2"
+ALGORITHM = "HS256"
+
+def jwt_decode(token):
+    return jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
 
 
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 
-def get_user_by_email(db: Session, email: str):
-    return db.query(User).filter(User.email == email).first()
+def get_user_by_auth_id(db: Session, auth_id: int):
+    return db.query(User).filter(User.auth_id == auth_id).first()
 
-
-def get_user_by_username(db: Session, username: str):
-    return db.query(User).filter(User.username == username).first()
+def get_user_by_token(db: Session, token: str):
+    data = jwt_decode(token)
+    print("FIN DE DECODING")
+    user_id = int(data['sub'])
+    print(data)
+    print(user_id)
+    return db.query(User).filter(User.id == user_id).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: schemas.UserCreate):
-    if not(utils.verify_email(user.email)):
-        raise HTTPException(status_code=400, detail="Invalid email")
-    password_hash = utils.generate_password_hash(user.password)
+def create_user(db: Session, auth_id: int):
     db_user = User(
-        name=user.name,
-        username=user.username,
-        email=user.email,
-        phone=user.phone,
-        password=password_hash
+        auth_id = auth_id
     )
     db.add(db_user)
     db.commit()
@@ -62,47 +66,47 @@ def get_user_location(db: Session, user_id: int, location_id: int):
     return db.query(Location).filter(Location.user_id == user_id, Location.id == location_id).first()
 
 
-def create_jwt(db: Session, user_id: int):
-    token = utils.generate_unique("hex")
-    jwt = JWT(
-        user_id=user_id,
-        token=token
-    )
-    db.add(jwt)
-    db.commit()
-    db.refresh(jwt)
-    return jwt
+# def create_jwt(db: Session, user_id: int):
+#     token = utils.generate_unique("hex")
+#     jwt = JWT(
+#         user_id=user_id,
+#         token=token
+#     )
+#     db.add(jwt)
+#     db.commit()
+#     db.refresh(jwt)
+#     return jwt
 
 
-def get_jwt(db: Session, user_id: int, user_password: str):
-    user = db.query(User).filter(User.id == user_id).first()
-    if user == None:
-        raise HTTPException(status_code=404, detail="User not found")
-    if utils.verify_password_hash(user_password, user.password):
-        if user.jwt != None: # Delete old jwt
-            db.query(JWT).filter(JWT.user_id == user.id).delete()
-            db.commit()
-        jwt = create_jwt(db, user.id)
-        jwt = db.query(JWT).filter(JWT.user_id == user_id).first()
-        jwt = JWT(user_id=user_id) if jwt is None else jwt
-        db.add(jwt)
-        return jwt
-    else:
-        raise HTTPException(status_code=401, detail="Wrong password")
+# def get_jwt(db: Session, user_id: int, user_password: str):
+#     user = db.query(User).filter(User.id == user_id).first()
+#     if user == None:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     if utils.verify_password_hash(user_password, user.password):
+#         if user.jwt != None: # Delete old jwt
+#             db.query(JWT).filter(JWT.user_id == user.id).delete()
+#             db.commit()
+#         jwt = create_jwt(db, user.id)
+#         jwt = db.query(JWT).filter(JWT.user_id == user_id).first()
+#         jwt = JWT(user_id=user_id) if jwt is None else jwt
+#         db.add(jwt)
+#         return jwt
+#     else:
+#         raise HTTPException(status_code=401, detail="Wrong password")
 
 
-def get_jwt_by_username(db: Session, user_username: str, user_password: str):
-    user = db.query(User).filter(User.username == user_username).first()
-    if user == None:
-        raise HTTPException(status_code=404, detail="User not found")
-    if utils.verify_password_hash(user_password, user.password):
-        if user.jwt != None: # Delete old jwt
-            db.query(JWT).filter(JWT.user_id == user.id).delete()
-            db.commit()
-        jwt = create_jwt(db, user.id)
-        return jwt
-    else:
-        raise HTTPException(status_code=401, detail="Wrong password")
+# def get_jwt_by_username(db: Session, user_username: str, user_password: str):
+#     user = db.query(User).filter(User.username == user_username).first()
+#     if user == None:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     if utils.verify_password_hash(user_password, user.password):
+#         if user.jwt != None: # Delete old jwt
+#             db.query(JWT).filter(JWT.user_id == user.id).delete()
+#             db.commit()
+#         jwt = create_jwt(db, user.id)
+#         return jwt
+#     else:
+#         raise HTTPException(status_code=401, detail="Wrong password")
 
 
 def get_user_pings_received(db: Session, user_id: int, skip: int = 0, limit: int = 100):
@@ -116,7 +120,11 @@ def get_user_pings_received(db: Session, user_id: int, skip: int = 0, limit: int
 
 def get_user_pings_sent(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     pings = db.query(Ping).filter(Ping.sender_id == user_id).offset(skip).limit(limit).all()
-    return pings
+    receivers = []
+    for ping in pings:
+        receiver = db.query(User).filter(User.id == ping.receiver_id).first()
+        receivers.append(receiver)
+    return receivers
 
 
 def create_ping(db: Session, sender_id: int, receiver_id: int):
@@ -127,23 +135,23 @@ def create_ping(db: Session, sender_id: int, receiver_id: int):
     return ping
 
 
-def create_verification_email(db: Session, user_id: int):
-    token = utils.generate_unique("hex")
-    user = db.query(User).filter(User.id == user_id).first()
-    if user == None:
-        raise HTTPException(status_code=404, detail="User not found")
-    if user.verified == True:
-        raise HTTPException(status_code=400, detail="User already verified")
-    verification_email = db.query(VerificationEmail).filter(VerificationEmail.user_id == user_id).first()
-    if verification_email != None:
-        return verification_email
-    verification_email = VerificationEmail(user_id = user_id, token = token)
-    db.add(verification_email)
-    db.commit()
-    db.refresh(verification_email)
-    return verification_email
+# def create_verification_email(db: Session, user_id: int):
+#     token = utils.generate_unique("hex")
+#     user = db.query(User).filter(User.id == user_id).first()
+#     if user == None:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     if user.verified == True:
+#         raise HTTPException(status_code=400, detail="User already verified")
+#     verification_email = db.query(VerificationEmail).filter(VerificationEmail.user_id == user_id).first()
+#     if verification_email != None:
+#         return verification_email
+#     verification_email = VerificationEmail(user_id = user_id, token = token)
+#     db.add(verification_email)
+#     db.commit()
+#     db.refresh(verification_email)
+#     return verification_email
 
 
-def get_verification_email(db: Session, user_id: int, token: str):
-    return db.query(VerificationEmail
-        ).filter(VerificationEmail.user_id == user_id, VerificationEmail.token == token).first()
+# def get_verification_email(db: Session, user_id: int, token: str):
+#     return db.query(VerificationEmail
+#         ).filter(VerificationEmail.user_id == user_id, VerificationEmail.token == token).first()
