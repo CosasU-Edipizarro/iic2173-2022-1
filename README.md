@@ -7,10 +7,10 @@
 | Campo              | Valor                            |
 | ------------------ | -------------------------------- |
 | IP API             | 3.136.190.174                    |
-| URL API            | https://api.iic2173-g19.xyz/     |
-| URL API GATEWAY    | https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/     |
-| URL FRONT          | https://iic2173-g19.xyz/         |
-| Docs API           | https://api.iic2173-g19.xyz/docs |
+| URL API            | http://api.iic2173-g19.xyz/     |
+| URL API GATEWAY    | http://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/     |
+| URL FRONT          | http://iic2173-g19.xyz/         |
+| Docs API           | http://api.iic2173-g19.xyz/docs |
 
 ## Stack
 

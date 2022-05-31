@@ -34,6 +34,7 @@ export default {
     async getUsers () {
       var requestOptions = {
         method: 'GET',
+        mode: "no-cors",
         redirect: 'follow'  
       };
       await fetch(`${window.hostname}/users/`, requestOptions)

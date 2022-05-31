@@ -51,6 +51,7 @@ export default {
 
         method: 'POST',
         headers: myHeaders,
+        mode: 'no-cors',
         body: raw,
         redirect: 'follow'
       };
@@ -62,6 +63,7 @@ export default {
         this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
         return fetch(`${window.hostname}/users/user_info` , {
             method: 'GET',
+            mode: "no-cors",
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${this.$cookies.get('token')}`,

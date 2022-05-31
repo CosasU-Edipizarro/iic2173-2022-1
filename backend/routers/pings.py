@@ -22,7 +22,7 @@ async def create_user_ping(
     print("Task")
     print(task)
     print("Task Info")
-    # print(get_task_info(task))
+    # print(get_task_info(task.id))
     index_data = dindin(sender_id, receiver_id)
     siin_data = index_data["siin"]
     sidi_data = index_data["sidi"]
