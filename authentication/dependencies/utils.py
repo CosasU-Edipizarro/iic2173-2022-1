@@ -26,14 +26,11 @@ async def send_email(email: str, subject: str, content: str):
         to_emails=email,
         subject=subject,
         html_content=content)
-    # try:
-    #     sg = SendGridAPIClient(ENV['SENDGRID_API_KEY'])
-    #     response = sg.send(message)
-    #     print(response.status_code)
-    #     print(response.body)
-    #     print(response.headers)
-    # except Exception as e:
-    #     print(e.message)
+    try:
+        sg = SendGridAPIClient(ENV['SENDGRID_API_KEY'])
+        response = sg.send(message)
+    except Exception as e:
+        print(e.message)
 
 async def send_verification_email(db: Session, user_id: int, email: str, token: str):
     user = crud.get_user(db, user_id)
