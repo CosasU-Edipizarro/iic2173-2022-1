@@ -21,12 +21,16 @@ export default {
     this.getPersonalLocations();
   },
   methods: {
-    async getUsers() {
-      await fetch( `${window.hostname}/users` )
-        .then( response => response.json() )
-        .then( data => { this.all_users = data } )
-        .then( () => { this.loaded = true; } )
-        .catch( error => console.log( error ) );
+    async getUsers () {
+      var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'  
+      };
+      await fetch(`${window.hostname}/users/`, requestOptions)
+        .then(response => response.json())
+        .then(data => { this.all_users = data; console.log(this.all_users); })
+        .then(() => { this.loaded = true; })
+        .catch(error => console.log('error', error));
     },
     async getLocations(user_id) {
       await fetch( `${window.hostname}/users/${user_id}/locations` )

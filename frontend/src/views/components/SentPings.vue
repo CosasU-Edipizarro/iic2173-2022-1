@@ -22,7 +22,8 @@ export default {
       img4,
       img5,
       img6,
-      receivers: [],
+      receivers: {},
+
       loaded: false
     };
   },
@@ -85,10 +86,11 @@ export default {
           </div>
         </td>
         <td class="align-middle text-center">
-          <span class="text-secondary text-xs font-weight-bold">dindin</span>
+          <span class="text-secondary text-xs font-weight-bold">{{user.dindin}}</span>
         </td>
         <td class="align-middle text-center">
-          <span class="text-secondary text-xs font-weight-bold">pendiente...</span>
+          <span class="text-secondary text-xs font-weight-bold">Completado</span>
+
         </td>
       </tr>
     </tbody>

@@ -17,6 +17,7 @@ export default {
       location: {
         name: "",
         coords: "",
+        tag: "",
       },
       locations: [],
       locationsUpdater: 0,
@@ -34,15 +35,15 @@ export default {
       const token = this.$cookies.get("token");
       if (token) {
         const user_id = this.$cookies.get("user_id");
+        //console.log("user_id",user_id)
         const data = this.location;
         console.log("Data createLocation");
-        console.log(data);
         console.log(data);
         await fetch(`${window.hostname}/users/${user_id}/locations`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
           },
           body: JSON.stringify(data)
         })
@@ -105,7 +106,9 @@ export default {
         <label>Coordenadas</label>
         <vsud-input v-model="location.coords" type="text" placeholder="Latitud, Longitud" name="coords" />
         <label>Etiqueta</label>
-        <select id="tag" class="form-select" placeholder="Entretención">
+
+        <select id="tag" class="form-select" placeholder="Entretención" v-model="location.tag">
+
           <option v-for="tag in tags" :key="tag" :value="tag" class="col-12 col-md-3 col-xl-4 pb-6 min-height-300">
             {{ tag }}
           </option>

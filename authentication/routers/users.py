@@ -14,6 +14,11 @@ router = APIRouter(prefix="/users")
 
 @router.post("/", response_model=schemas.TokenBase)
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    print("POST /users/ TEST all_users")
+    all_users = db.query(User).all()
+    for user_all in all_users:
+        print(f"User id: {user_all.id}")
+
     print("POST /users/ de auth")
     print(user)
     found_user = crud.get_user_by_email(db, email=user.email)

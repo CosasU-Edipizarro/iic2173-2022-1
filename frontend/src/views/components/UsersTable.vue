@@ -46,11 +46,18 @@ export default {
     async getUsers () {
       const skip = this.currentPage * this.users_per_page;
       const limit = this.users_per_page;
-      await fetch( `${window.hostname}/users?skip=${skip}&limit=${limit}` )
-        .then( response => response.json() )
-        .then( data => { this.users = data; console.log(this.users); } )
-        .then( () => { this.loaded = true; } )
-        .catch( error => console.log( error ) );
+
+      var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'  
+      };
+
+      // await fetch(`${window.hostname}/users?skip=${skip}&limit=${limit}/`, requestOptions)
+      await fetch(`${window.hostname}/users/`, requestOptions)
+        .then(response => response.json())
+        .then(data => { this.users = data; console.log(this.users); })
+        .then(() => { this.loaded = true; })
+        .catch(error => console.log('error', error));
     },
 
     async nextPage() {
@@ -72,13 +79,17 @@ export default {
       if (token) {
         const user_id = this.$cookies.get("user_id");
         //agregar start ticket indices
-        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          },
-        })
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        let raw = JSON.stringify({});
+        let requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, requestOptions)
         .then(response => response.json())
         .then(() => {
           alert('Ping enviado correctamente');
@@ -138,7 +149,7 @@ export default {
                 <span class="text-secondary text-xs font-weight-bold">{{ user.phone }}</span>
               </td>
               <td class="align-middle text-center text-sm">
-                <button type="button" class="btn btn-outline-success btn-sm" @click="pingUser(user.id)">Pinguear</button>
+                <button type="button" class="btn btn-outline-success btn-sm" @click="pingUser(user.user_id)">Pinguear</button>
               </td>
             </tr>
           </tbody>

@@ -37,13 +37,16 @@ async def login_user(user_data: schemas.UserLogin, db: Session = Depends(get_db)
 @router.get("/verify")
 async def verify_auth(request: Request):
     try:
+        print("ENTRANDO A VERIFY BACKEND")
         token = request.headers.get('Authorization')
-        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+        headers = {"Content-Type": "application/json", "Authorization": token}
+
         proxies = {"http": ENV['URL_AUTH']}
         request_session = requests.get(ENV['URL_AUTH']+"/auth/verify", headers=headers, proxies=proxies)
         response = request_session.json()
         print(response)
-        if request:
+        if response != {"detail": "Could not validate credentials"}:
+
             print("Correct token")
             return response
         else:

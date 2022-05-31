@@ -36,22 +36,31 @@ export default {
   },
   methods: {
     async submitSignup() {
-      const data = this.user;
-      console.log(data)
-      console.log(JSON.stringify(data))
-      await fetch(`${window.hostname}/users` , {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      let raw = JSON.stringify({
+        "name": this.user.username,
+        "username": this.user.username,
+        "email": this.user.email,
+        "phone": this.user.phone,
+        "hashed_password": this.user.hashed_password
+      });
+
+      let requestOptions = {
+
         method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+
+      await fetch(`${window.hostname}/users/`, requestOptions)
       .then(response => response.json())
       .then(data => {
         console.log(data);
         this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
-        return fetch(`${window.hostname}/users/user` , {
+        return fetch(`${window.hostname}/users/user_info` , {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

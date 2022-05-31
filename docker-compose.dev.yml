@@ -19,10 +19,12 @@ services:
 
   db:
     image: postgis/postgis
+    ports: 
+      - 5432:5432
     volumes:
       - database_data:/var/lib/postgresql/data/
     networks:
-      - app_db_network
+      - app_network
     env_file:
       - ./config/environment/.env.db
 
@@ -35,7 +37,6 @@ services:
       - .:/app
     networks:
       - app_network
-      - app_db_network
     env_file:
       - ./config/environment/.env.back
     depends_on:

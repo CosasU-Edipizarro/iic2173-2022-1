@@ -30,7 +30,8 @@ def load_env():
     ENV['URL_FRONT'] = os.environ.get('URL_FRONT', 'localhost:3000')
     ENV['URL_NO_PROXY'] = os.environ.get('URL_NO_PROXY', 'localhost')
 
-    ENV['CELERY'] = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+    ENV['CELERY'] = os.environ.get('CELERY', 'False').lower() in ('true', '1', 't')
+
     print(f"ENV CELERY: {ENV['CELERY'] == True}")
     ENV['CELERY_BROKER_URL'] = os.environ.get('CELERY_BROKER_URL', 'secret_celery_broker')
     ENV['CELERY_RESULT_BACKEND'] = os.environ.get('CELERY_RESULT_BACKEND', 'secret_celery_result_backend')

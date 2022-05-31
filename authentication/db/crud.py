@@ -74,9 +74,12 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        print(f"get_current_user(): token = {token}")
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         user_id: str = payload.get("sub")
         username: str = payload.get("username")
+        print(f"get_current_user(): username = {username}")
+
         if username is None:
             raise credentials_exception
         token_data = schemas.TokenData(

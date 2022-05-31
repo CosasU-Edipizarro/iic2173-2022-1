@@ -54,11 +54,12 @@ export default {
       .then( (data) => {
         console.log(data);
         this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
-        return fetch(`${window.hostname}/users/user` , {
+        return fetch(`${window.hostname}/users/user_info` , {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.$cookies.get('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
+
             }
         })
       })

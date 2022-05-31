@@ -3,8 +3,10 @@ from fastapi import HTTPException
 
 from db.models import Session, User, Location, Ping
 from db import schemas
+from routers.users import read_users
 from dependencies import utils
 from jose import JWTError, jwt
+
 
 SECRET_KEY = "b75f0e58f700478526706d771021c3a057fa9118d2c0166adb05e00cb55b93c2"
 ALGORITHM = "HS256"
@@ -12,7 +14,17 @@ ALGORITHM = "HS256"
 def jwt_decode(token):
     return jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
 
+def get_user_by_token(db: Session, token: str):
+    token = token.split(" ")[1]
+    print(token)
+    data = jwt_decode(token)
+    print("FIN DE DECODING")
+    user = get_user_by_auth_id(db, int(data['sub']))
+    data['user_id'] = user.id
+    return data
 
+
+  
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
@@ -20,6 +32,7 @@ def get_user(db: Session, user_id: int):
 def get_user_by_auth_id(db: Session, auth_id: int):
     return db.query(User).filter(User.auth_id == auth_id).first()
 
+  
 def get_user_by_token(db: Session, token: str):
     data = jwt_decode(token)
     print("FIN DE DECODING")
@@ -109,49 +122,44 @@ def get_user_location(db: Session, user_id: int, location_id: int):
 #         raise HTTPException(status_code=401, detail="Wrong password")
 
 
-def get_user_pings_received(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+
+async def get_user_pings_received(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     pings = db.query(Ping).filter(Ping.receiver_id == user_id).offset(skip).limit(limit).all()
-    senders = []
+    all_users = await read_users(db=db)
+    senders = {}
     for ping in pings:
-        sender = db.query(User).filter(User.id == ping.sender_id).first()
-        senders.append(sender)
+        for user in all_users:
+            if user["user_id"] == ping.sender_id:
+                senders[ping.sender_id] = user
+                (senders[ping.sender_id]).update({
+                    "sidi": ping.sidi,
+                    "siin": ping.siin,
+                    "dindin": ping.dindin
+                })
     return senders
 
 
-def get_user_pings_sent(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+async def get_user_pings_sent(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     pings = db.query(Ping).filter(Ping.sender_id == user_id).offset(skip).limit(limit).all()
-    receivers = []
+    all_users = await read_users(db=db)
+    receivers = {}
     for ping in pings:
-        receiver = db.query(User).filter(User.id == ping.receiver_id).first()
-        receivers.append(receiver)
+        for user in all_users:
+            if user["user_id"] == ping.receiver_id:
+                receivers[ping.receiver_id] = user
+                (receivers[ping.receiver_id]).update({
+                    "sidi": ping.sidi,
+                    "siin": ping.siin,
+                    "dindin": ping.dindin
+                })
     return receivers
 
 
-def create_ping(db: Session, sender_id: int, receiver_id: int):
-    ping = Ping(sender_id = sender_id, receiver_id = receiver_id)
+def create_ping(db: Session, sender_id: int, receiver_id: int, siin: float, sidi: float, dindin: float):
+    ping = Ping(sender_id = sender_id, receiver_id = receiver_id, siin = siin, sidi = sidi, dindin = dindin)
     db.add(ping)
     db.commit()
     db.refresh(ping)
     return ping
 
 
-# def create_verification_email(db: Session, user_id: int):
-#     token = utils.generate_unique("hex")
-#     user = db.query(User).filter(User.id == user_id).first()
-#     if user == None:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     if user.verified == True:
-#         raise HTTPException(status_code=400, detail="User already verified")
-#     verification_email = db.query(VerificationEmail).filter(VerificationEmail.user_id == user_id).first()
-#     if verification_email != None:
-#         return verification_email
-#     verification_email = VerificationEmail(user_id = user_id, token = token)
-#     db.add(verification_email)
-#     db.commit()
-#     db.refresh(verification_email)
-#     return verification_email
-
-
-# def get_verification_email(db: Session, user_id: int, token: str):
-#     return db.query(VerificationEmail
-#         ).filter(VerificationEmail.user_id == user_id, VerificationEmail.token == token).first()

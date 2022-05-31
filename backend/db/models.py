@@ -58,7 +58,7 @@ class Location(Base):
     coords = Column(Geometry(geometry_type='POINT', srid=4326))
     tag = Column(Text(), nullable=False)
 
-    user_id = Column(Integer(), ForeignKey('users.id'), index=True)
+    user_id = Column(Integer(), ForeignKey('users.id'), index=True) #auth_id?
     user = relationship("User", back_populates="locations")
 
 

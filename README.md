@@ -94,10 +94,12 @@ Certificados certbot `/config/certbot/`
 ## Consideraciones generales
  * Una vez que te logeas, no puedes cerrar sesión por las cookies, mejor probar con ventanas en incognito.
  * Es posible ingresar con un usuario que no existe (pero las cosas no funcionan).
+ * Para los mapas, si se cierra el popup se borra, teniendo que recargar la página.
  * El formato de ubicación tiene que ser *latitud, longitud* , sino no se agrega bien la ubicacion.
  * Si un usuario no tiene ubicaciones, se le pondra una por default en la UC.
  * El perfil no es funcional todavia.
  * Por ahora solo se pueden enviar pings y ver cuales te han enviado, pero no se pueden aceptar o rechazar.
+ * No se puede pinguear a alguien que no tenga ubicaciones
  * La documentación del diagrama UML se encuentra dentro de la carpeta /docs
  * La API externa que implementamos agrega la dirección a un lugar según las coordenadas, en "Tus Lugares".
  * Tenemos implementado el API gateway, pero algunas rutas no funcionan

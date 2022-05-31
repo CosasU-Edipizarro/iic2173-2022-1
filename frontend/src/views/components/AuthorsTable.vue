@@ -22,7 +22,7 @@ export default {
       img4,
       img5,
       img6,
-      senders: [],
+      senders: {},
       loaded: false
     };
   },
@@ -31,12 +31,21 @@ export default {
     this.getUserPings();
   },
   methods: {
-    async getUsers() {
-      await fetch( `${window.hostname}/users` )
-        .then( response => response.json() )
-        .then( data => { this.all_users = data } )
-        .then( () => { this.loaded = true; } )
-        .catch( error => console.log( error ) );
+    async getUsers () {
+      var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'  
+      };
+      await fetch(`${window.hostname}/users/`, requestOptions)
+        .then(response => {
+          let data = response.json()
+          console.log(data)
+          response.json()
+          return data
+        })
+        .then(data => { this.all_users = data; console.log(this.users); })
+        .then(() => { this.loaded = true; })
+        .catch(error => console.log('error', error));
     },
     async getUserPings() {
       const token = this.$cookies.get("token");
@@ -129,13 +138,14 @@ export default {
         </td>
 
         <td class="align-middle text-center">
-          <span class="text-secondary text-xs font-weight-bold">sidi</span>
+          <span class="text-secondary text-xs font-weight-bold">{{user.sidi}}</span>
         </td>
         <td class="align-middle text-center">
-          <span class="text-secondary text-xs font-weight-bold">siin</span>
+          <span class="text-secondary text-xs font-weight-bold">{{user.siin}}</span>
         </td>
         <td class="align-middle text-center">
-          <span class="text-secondary text-xs font-weight-bold">dindin</span>
+          <span class="text-secondary text-xs font-weight-bold">{{user.dindin}}</span>
+
         </td>
 
         <td class="align-middle text-center text-sm">

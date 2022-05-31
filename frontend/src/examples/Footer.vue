@@ -11,12 +11,12 @@
             {{ new Date().getFullYear() }}, made with
             <i class="fa fa-heart"></i> by
             <a
-              href="https://www.creative-tim.com"
+              href="http://iic2173-g19.xyz/"
               class="font-weight-bold"
               target="_blank"
-              >Creative Tim</a
+              >G19</a
             >
-            for a better web.
+            for a better world.
           </div>
         </div>
         <div class="col-lg-6">
@@ -25,15 +25,15 @@
           >
             <li class="nav-item">
               <a
-                href="https://www.creative-tim.com"
+                href="https://iic2173-g19.xyz/"
                 class="nav-link text-muted"
                 target="_blank"
-                >Creative Tim</a
+                >G19</a
               >
             </li>
             <li class="nav-item">
               <a
-                href="https://www.creative-tim.com/presentation"
+                href="https://iic2173-g19.xyz/"
                 class="nav-link text-muted"
                 target="_blank"
                 >About Us</a

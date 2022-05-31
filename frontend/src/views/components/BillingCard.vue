@@ -80,6 +80,10 @@ export default {
               Coordenadas:
               <span class="text-dark ms-sm-2 font-weight-bold"> {{ location.coords }}</span>
             </span>
+            <span class="mb-2 text-xs">
+              Etiqueta:
+              <span class="text-dark ms-sm-2 font-weight-bold"> {{ location.tag }}</span>
+            </span>
             <span v-if="loadedAddress" class="mb-2 text-xs">
               Dirección:
               <span class="text-dark ms-sm-2 font-weight-bold"> {{ location.address }}</span>

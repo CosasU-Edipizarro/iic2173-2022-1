@@ -79,6 +79,7 @@ services:
     restart: unless-stopped
     networks:
       - app_network
+      - app_db_network
     expose:
       - 6379
 
@@ -93,6 +94,7 @@ services:
       - .:/app
     networks:
       - app_network
+      - app_db_network
     env_file:
       - ./config/environment/.env.back
     depends_on:
@@ -113,6 +115,7 @@ services:
     networks:
       - nginx_network
       - app_network
+      - app_db_network
     env_file:
       - ./config/environment/.env.back
     depends_on:
