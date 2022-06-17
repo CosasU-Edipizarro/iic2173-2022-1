@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from db.db_migration import db_migration
 from db.crud import oauth2_scheme, get_current_user
 from db.models import Session, get_db
