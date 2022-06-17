@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from db.db_migration import db_migration
 from db.populate import db_populate
 from routers import routers

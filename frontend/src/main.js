@@ -9,7 +9,7 @@ import SoftUIDashboard from "./soft-ui-dashboard";
 
 
 // window.hostname = 'http://localhost:8000'
-window.hostname = process.env.API_URL
+// window.hostname = process.env.API_URL
 window.hostname = 'http://api.iic2173-g19.xyz'
 // window.hostname = 'http://192.168.100.9:8000'
 
