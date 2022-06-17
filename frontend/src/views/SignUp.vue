@@ -36,8 +36,6 @@ export default {
   },
   methods: {
     async submitSignup() {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
 
       let raw = JSON.stringify({
         "name": this.user.username,
@@ -48,12 +46,11 @@ export default {
       });
 
       let requestOptions = {
-
         method: 'POST',
-        headers: myHeaders,
-        mode: 'no-cors',
-        body: raw,
-        redirect: 'follow'
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        redirect: 'follow',
+        body: raw
       };
 
       await fetch(`${window.hostname}/users/`, requestOptions)
@@ -63,11 +60,12 @@ export default {
         this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
         return fetch(`${window.hostname}/users/user_info` , {
             method: 'GET',
-            mode: "no-cors",
+            mode: 'cors',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${this.$cookies.get('token')}`,
-            }
+            },
+            redirect: 'follow'
         })
       })
       .then(response => response.json())

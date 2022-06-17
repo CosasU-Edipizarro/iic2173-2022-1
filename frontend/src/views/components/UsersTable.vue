@@ -49,7 +49,7 @@ export default {
 
       var requestOptions = {
         method: 'GET',
-        mode: "no-cors",
+        mode: "cors",
         redirect: 'follow'  
       };
 
@@ -86,7 +86,7 @@ export default {
         let raw = JSON.stringify({});
         let requestOptions = {
           method: 'POST',
-          mode: "no-cors",
+          mode: "cors",
           headers: myHeaders,
           body: raw,
           redirect: 'follow'

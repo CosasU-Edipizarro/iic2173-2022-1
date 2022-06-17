@@ -20,7 +20,7 @@ export default {
         const user_id = this.$cookies.get("user_id");
         await fetch(`${window.hostname}/users/${user_id}/locations`, {
           method: "GET",
-          mode: "no-cors",
+          mode: "cors",
           headers: {
             "Content-Type": "application/json",
             Authorization: token

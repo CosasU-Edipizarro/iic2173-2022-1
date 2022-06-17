@@ -45,10 +45,8 @@ export default {
       const password = this.user.password;
       await fetch(`${window.hostname}/auth/login`,{
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: "no-cors",
+        mode: "cors",
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ "username": username, "password": password })
       })
       .then(response => response.json())
@@ -57,11 +55,10 @@ export default {
         this.$cookies.set('token', data["access_token"], { maxAge: 60 * 60 * 24 * 7 });
         return fetch(`${window.hostname}/users/user_info` , {
             method: 'GET',
-            mode: "no-cors",
+            mode: "cors",
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${this.$cookies.get('token')}`,
-
             }
         })
       })

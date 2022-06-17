@@ -1,27 +1,15 @@
 <script>
 import VsudAvatar from "@/components/VsudAvatar.vue";
-import VsudBadge from "@/components/VsudBadge.vue";
 import img1 from "../../assets/img/team-2.jpg";
-import img2 from "../../assets/img/team-3.jpg";
-import img3 from "../../assets/img/team-4.jpg";
-import img4 from "../../assets/img/team-3.jpg";
-import img5 from "../../assets/img/team-2.jpg";
-import img6 from "../../assets/img/team-4.jpg";
 
 export default {
   name: "AuthorsTable",
   components: {
     VsudAvatar,
-    VsudBadge,
   },
   data() {
     return {
       img1,
-      img2,
-      img3,
-      img4,
-      img5,
-      img6,
       senders: {},
       loaded: false
     };
@@ -34,7 +22,7 @@ export default {
     async getUsers () {
       var requestOptions = {
         method: 'GET',
-        mode: "no-cors",
+        mode: "cors",
         redirect: 'follow'  
       };
       await fetch(`${window.hostname}/users/`, requestOptions)

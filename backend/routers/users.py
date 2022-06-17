@@ -1,7 +1,6 @@
 import os
 from gzip import READ
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-
 from db.models import ENV, Session, get_db, User, Location
 from db import schemas, crud
 from dependencies import utils
@@ -13,10 +12,7 @@ import requests
 
 router = APIRouter(prefix="/users")
 
-
-
 @router.get("/", response_model=list[dict])
-
 async def read_users(
     skip: int = 0, 
     limit: int = 100, 
@@ -83,7 +79,6 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
             "phone": user.phone,
             "hashed_password": user.hashed_password
         }
-
         data = json.dumps(data, indent = 4)
         headers = {"Content-Type": "application/json"}
         proxies = { "http": ENV['URL_AUTH'] }

@@ -45,7 +45,7 @@ export default {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.$cookies.get('token')}`,
           },
-          mode: "no-cors",
+          mode: "cors",
           body: JSON.stringify(data)
         })
         .then(response => response.json())
@@ -66,7 +66,7 @@ export default {
         const user_id = this.$cookies.get("user_id");
         await fetch(`${window.hostname}/users/${user_id}/locations`, {
           method: "GET",
-          mode: "no-cors",
+          mode: "cors",
           headers: {
             "Content-Type": "application/json",
             Authorization: token,
