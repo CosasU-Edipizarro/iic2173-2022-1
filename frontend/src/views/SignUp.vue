@@ -38,7 +38,7 @@ export default {
     async submitSignup() {
 
       let raw = JSON.stringify({
-        "name": this.user.username,
+        "name": this.user.name,
         "username": this.user.username,
         "email": this.user.email,
         "phone": this.user.phone,
