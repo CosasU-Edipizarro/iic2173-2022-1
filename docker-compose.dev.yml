@@ -139,6 +139,63 @@ services:
     depends_on:
       - db_auth
 
+  ##############################
+  # Chat Environment #
+  ##############################
+
+  nginx_chat:
+    image: nginx
+    ports:
+      - 8088:80
+    volumes:
+      - ./config/nginx/development/chat:/etc/nginx/conf.d
+    depends_on:
+      - chat
+    networks:
+      - chat_network
+
+  db_chat:
+    image: postgres:13
+    volumes:
+      - messagingDB:/var/lib/postgresql/data
+    env_file: 
+      - ./config/environment/.env.db_chat
+    expose:
+      - 5432
+    networks:
+      - chat_network
+
+  chat:
+    build:
+      context: chat
+      dockerfile: Dockerfile.dev
+    container_name: chat
+    restart: always
+    volumes:
+      - /usr/src/chat/node_modules
+      - ./chat/:/usr/src/chat
+    expose:
+      - 7777
+      - 9229
+    command:
+      "npm run debug"
+    env_file: 
+      - ./config/environment/.env.chat
+    environment:
+      - DUMMY=0
+    depends_on:
+      - db_chat
+      - pubsub
+    networks:
+      - chat_network
+
+  pubsub:
+    image: redis:latest
+    expose:
+      - 6379
+    networks:
+      - chat_network
+
 networks:
   app_network:
     driver: bridge
@@ -148,8 +205,11 @@ networks:
     driver: bridge
   auth_db_network:
     driver: bridge
+  chat_network:
+    driver: bridge
 
 volumes:
+  app:
   database_data:
   database_auth_data:
-  app:
+  messagingDB:

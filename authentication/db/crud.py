@@ -4,21 +4,21 @@ from typing import Union
 
 from datetime import datetime, timedelta
 
-from db.models import Session, User, VerificationEmail, Token, get_db
+from db.models import ENV, Session, User, VerificationEmail, Token, get_db
 from db import schemas
 from dependencies import utils
 
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-
-SECRET_KEY = "b75f0e58f700478526706d771021c3a057fa9118d2c0166adb05e00cb55b93c2"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
+import uuid
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 
+ALGORITHM=ENV["ALGORITHM"]
+SECRET_KEY=ENV["SECRET_KEY"]
+ACCESS_TOKEN_EXPIRE_MINUTES=ENV["ACCESS_TOKEN_EXPIRE_MINUTES"]
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -44,7 +44,8 @@ def create_access_token(db: Session, data: dict, expires_delta: Union[timedelta,
         "email": user_data.email,
         "name": user_data.name,
         "phone": user_data.phone,
-        "verified": user_data.verified
+        "verified": user_data.verified,
+        "uuid": user_data.uuid
     }
     to_encode = data_to_encode.copy()
     if expires_delta:
@@ -88,7 +89,8 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
             email=payload.get("email"),
             name=payload.get("name"),
             phone=payload.get("phone"),
-            verified=payload.get("verified")
+            verified=payload.get("verified"),
+            uuid=payload.get("uuid")
         )
 
     except JWTError:
@@ -110,7 +112,8 @@ def create_user(db: Session, user: schemas.UserCreate):
         username=user.username,
         email=user.email,
         phone=user.phone,
-        hashed_password=password_hash
+        hashed_password=password_hash,
+        uuid=uuid.uuid4()
     )
     db.add(db_user)
     db.commit()

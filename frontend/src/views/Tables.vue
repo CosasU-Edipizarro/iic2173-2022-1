@@ -20,6 +20,15 @@
               <sent-pings />
             </div>
           </div>
+
+          <div class="card-header pb-0">
+            <h6>Matches</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <matches />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -29,12 +38,14 @@
 <script>
 import AuthorsTable from "./components/AuthorsTable.vue";
 import SentPings from "./components/SentPings.vue";
+import Matches from "./components/Matches.vue";
 
 export default {
   name: "TablesPage",
   components: {
     AuthorsTable,
-    SentPings
+    SentPings,
+    Matches
   },
 };
 </script>

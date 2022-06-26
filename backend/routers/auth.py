@@ -46,8 +46,6 @@ async def verify_auth(request: Request):
         response = request_session.json()
         print(response)
         if response != {"detail": "Could not validate credentials"}:
-
-            print("Correct token")
             return response
         else:
             raise HTTPException(

@@ -49,49 +49,57 @@ export default {
         alert("Debes iniciar sesión para acceder a esta página");
       }
     },
-    //
-    /*
-    async acceptPing(_id) {
+    async acceptPing(sender_id) {
       const token = this.$cookies.get("token");
       if (token) {
         const user_id = this.$cookies.get("user_id");
-        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          },
-        })
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", token);
+        let raw = JSON.stringify({"sender_id": sender_id, "receiver_id": user_id});
+        let requestOptions = {
+          method: 'PATCH',
+          mode: "cors",
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        await fetch(`${window.hostname}/pings/`, requestOptions)
         .then(response => response.json())
         .then(() => {
-          alert('Ping enviado correctamente');
+          alert('Ping aceptado correctamente');
+        })
+        .catch(error => { console.log(error); alert(error) });
+      } else {
+        alert("Debes iniciar sesión para acceder a esta página");
+      }
+    },
+    async denyPing(sender_id) {
+      const token = this.$cookies.get("token");
+      if (token) {
+        const user_id = this.$cookies.get("user_id");
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", token);
+        let raw = JSON.stringify({"sender_id": sender_id, "receiver_id": user_id});
+        let requestOptions = {
+          method: 'DELETE',
+          mode: "cors",
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        await fetch(`${window.hostname}/pings/`, requestOptions)
+        .then(response => response.json())
+        .then(() => {
+          alert('Ping rechazado correctamente');
         })
         .catch(error => { console.log(error); alert(error) });
       } else {
         alert("Debes iniciar sesión para acceder a esta página");
       }
     }
-    async denyPing(_id) {
-      const token = this.$cookies.get("token");
-      if (token) {
-        const user_id = this.$cookies.get("user_id");
-        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
-          method: "POST",//su DELETE
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          },
-        })
-        .then(response => response.json())
-        .then(() => {
-          alert('Ping enviado correctamente');
-        })
-        .catch(error => { console.log(error); alert(error) });
-      } else {
-        alert("Debes iniciar sesión para acceder a esta página");
-      }
-    }*/
-  },
+  }
 };
 </script>
 
@@ -138,11 +146,11 @@ export default {
         </td>
 
         <td class="align-middle text-center text-sm">
-          <button type="button" class="btn btn-outline-success btn-sm">Aceptar</button>
+          <button type="button" class="btn btn-outline-success btn-sm" @click="acceptPing(user.user_id)">Aceptar</button>
         </td>
         
-        <td class="align-middle">
-          <button type="button" class="mb-0 btn btn-link pe-3 ps-0 ms-auto" href="javascript:;">Rechazar</button>
+        <td class="align-middle text-center text-sm">
+          <button type="button" class="btn btn-outline-danger btn-sm" @click="denyPing(user.user_id)">Rechazar</button>
         </td>
       </tr>
     </tbody>

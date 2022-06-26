@@ -8,19 +8,6 @@ class TokenBase(Base):
     access_token: str
     token_type: str
 
-# class JWTBase(Base):
-#     token: str
-
-
-# class JWTCreate(JWTBase):
-#     pass
-
-# class JWT(JWTBase):
-#     id: int
-#     user_id: int
-
-#     class Config:
-#         orm_mode = True
 
 
 class LocationBase(Base):
@@ -28,10 +15,8 @@ class LocationBase(Base):
     coords: str
     tag: str
 
-
 class LocationCreate(LocationBase):
     pass
-
 
 class Location(LocationBase):
     id: int
@@ -41,53 +26,19 @@ class Location(LocationBase):
         orm_mode = True
 
 
+
 class UserBase(Base):
     name: str
     username: str
     email: str
     phone: str
 
-
 class UserCreate(UserBase):
     hashed_password: str
-
 
 class User(UserBase):
     id: int
     verified: bool
-
-
-class PingBase(Base):
-    sender_id: int
-    receiver_id: int
-
-
-class PingCreate(PingBase):
-    pass
-
-
-class Ping(PingBase):
-    id: int
-    sidi: float
-    siin: float
-    dindin: float
-
-    class Config:
-        orm_mode = True
-
-
-# class VerificationEmailBase(Base):
-#     pass
-
-# class VerificationEmailCreate(VerificationEmailBase):
-#     pass
-
-# class VerificationEmail(VerificationEmailBase):
-#     id: int
-#     user_id: int
-
-#     class Config:
-#         orm_mode = True
 
 class UserLoginBase(Base):
     username: str
@@ -95,6 +46,27 @@ class UserLoginBase(Base):
 
 class UserLogin(UserLoginBase):
     pass
+
+
+
+class PingBase(Base):
+    sender_id: int
+    receiver_id: int
+
+class PingCreate(PingBase):
+    pass
+
+class Ping(PingBase):
+    id: int
+    sidi: float
+    siin: float
+    dindin: float
+    accepted: bool
+
+    class Config:
+        orm_mode = True
+
+
 
 class CountBase(Base):
     count: int

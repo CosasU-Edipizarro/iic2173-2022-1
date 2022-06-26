@@ -4,6 +4,7 @@ def load_env():
     ENV = dict()
     ENV['DEBUG'] = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
     ENV['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'foo')
+    ENV['ALGORITHM'] = os.environ.get('ALGORITHM', 'bar')
     ENV['JWT_SECRET'] = os.environ.get('JWT_SECRET', 'secret')
 
     ENV['DBUSER'] = os.environ.get('POSTGRES_USER', 'secret')

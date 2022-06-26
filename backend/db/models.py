@@ -84,6 +84,7 @@ class Ping(Base):
     sidi = Column(Float(), default=0)
     siin = Column(Float(), default=0)
     dindin = Column(Float(), default=0)
+    accepted = Column(Boolean(), default=False)
 
 
 # class VerificationEmail(Base):
