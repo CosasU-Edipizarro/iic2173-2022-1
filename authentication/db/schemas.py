@@ -27,6 +27,11 @@ class Token(TokenBase):
     class Config:
         orm_mode = True
 
+class ChatToken(Base):
+    token: str
+    other_user_uuid: str
+    
+
 class UserLoginBase(Base):
     username: str
     password: str

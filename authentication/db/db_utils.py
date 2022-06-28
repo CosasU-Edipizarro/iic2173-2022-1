@@ -30,6 +30,8 @@ def load_env():
     ENV['URL_AUTH'] = os.environ.get('URL_AUTH', 'localhost:8080')
     ENV['URL_FRONT'] = os.environ.get('URL_FRONT', 'localhost:3000')
     ENV['URL_NO_PROXY'] = os.environ.get('URL_NO_PROXY', 'localhost')
+    ENV['URL_CHAT'] = os.environ.get('URL_CHAT', 'localhost:8088')
 
+    ENV['ENTITY_UUID'] = os.environ.get('ENTITY_UUID', 'b20313a6-6b2d-43ce-be63-5f11b4deebe1')
 
     return ENV
