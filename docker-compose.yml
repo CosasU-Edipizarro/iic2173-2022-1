@@ -166,20 +166,20 @@ services:
   #       Newrelic Logger      #
   ##############################
 
-  newrelic:
-    container_name: newrelic
-    build:
-      context: ./newrelic
-      dockerfile: ./newrelic-infra.dockerfile
-    cap_add:
-      - SYS_PTRACE
-    network_mode: host
-    pid: host
-    privileged: true
-    volumes:
-      - "/:/host:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    restart: unless-stopped
+  # newrelic:
+  #   container_name: newrelic
+  #   build:
+  #     context: ./newrelic
+  #     dockerfile: ./newrelic-infra.dockerfile
+  #   cap_add:
+  #     - SYS_PTRACE
+  #   network_mode: host
+  #   pid: host
+  #   privileged: true
+  #   volumes:
+  #     - "/:/host:ro"
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #   restart: unless-stopped
 
 networks:
   nginx_network:
