@@ -46,6 +46,8 @@ services:
   db:
     container_name: db
     image: postgis/postgis
+    ports: 
+      - 5432:5432
     restart: unless-stopped
     volumes:
       - database_data:/var/lib/postgresql/data/
@@ -77,6 +79,8 @@ services:
     container_name: redis
     image: redis:7.0.0-alpine
     restart: unless-stopped
+    ports: 
+      - 6379:6379
     networks:
       - app_network
       - app_db_network
@@ -157,6 +161,25 @@ services:
       - ./config/environment/.env.auth
     depends_on:
       - db_auth
+
+  ##############################
+  #       Newrelic Logger      #
+  ##############################
+
+  newrelic:
+    container_name: newrelic
+    build:
+      context: ./newrelic
+      dockerfile: ./newrelic-infra.dockerfile
+    cap_add:
+      - SYS_PTRACE
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
 
 networks:
   nginx_network:
