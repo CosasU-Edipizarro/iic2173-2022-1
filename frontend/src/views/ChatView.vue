@@ -30,10 +30,6 @@
     props: [
       'room_id'
     ],
-    //mounted () {
-      //this.loadChat()
-      //this.$store.dispatch('loadOnlineUsers')
-    //},
     components: {
       'message': Message
     },
@@ -46,19 +42,31 @@
       },
     },
     created: function() {
-      console.log("Starting connection to WebSocket Server")
-      //this.connection = new WebSocket("ws://localhost:9229/chat")
-      //this.connection.send({"type":"select_room", "room_id": this.room_id});
+      console.log("This are the saved cookies")
+      console.log('chat_token: ', this.$cookies.get('chat_token'));
+      console.log('room_id: ', this.$cookies.get('room_id'));
+      console.log("Starting connection to WebSocket Server");
+      this.connection = new WebSocket(`${window.ws_hostname}/chat`)
+    },
+    mounted: function() {
+      const deez = this;
+      this.connection.onmessage = async function(event) {
+        let response = (JSON.parse(event.data)).data;
+        if (response.emitter) {
+          response.sentiment = await deez.getSentiment(response.content);
+          deez.chatMessages.push(response);
+        }
+      }
+      const chat_token = this.$cookies.get('chat_token');
+      const room_id = this.$cookies.get('room_id');
 
-      // this.connection.onmessage = function(event) {
-      //   console.log(event);
-      // }
-
-      // this.connection.onopen = function(event) {
-      //   console.log(event)
-      //   console.log("Successfully connected to the echo websocket server...")
-      // }
-
+      this.connection.onopen = function(event) {
+        console.log(event)
+        console.log("Successfully connected to the echo websocket server...")
+        
+        this.send(JSON.stringify({"type":"token", "content": chat_token}));
+        this.send(JSON.stringify({"type":"select_room", "room_id": room_id}));
+      }
     },
     methods: {
       async loadChat () {
@@ -67,7 +75,7 @@
           mode: "cors",
           redirect: 'follow'  
         };
-        await fetch(`${window.chat_hostname}/room/${this.room_id}`, requestOptions)
+        await fetch(`${window.chat_hostname}/rooms/${this.room_id}`, requestOptions)
           .then(response => response.json())
           .then(data => { this.messages = data; console.log(this.users); })
           .then(() => { this.loaded = true; })
@@ -89,9 +97,7 @@
       },
       sendMessage () {
         if (this.content !== '') {
-          console.log(this.connection);
-          //this.connection.send({"type":"message", "msg": this.content});
-          this.messages.push({"user": "hola", "message": this.content})
+          this.connection.send(JSON.stringify({"type":"message", "content": this.content}));
           this.content = ''
         }
       },
@@ -108,6 +114,26 @@
           var container = this.$el.querySelector('.chat-container')
           container.scrollTop = difference
         })
+      },
+      async getSentiment (text) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        let requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+        let data;
+        console.log("ANTES DE REQUEST")
+        await fetch(`${window.sentiment}?text=${text}`, requestOptions)
+          .then((result) => {
+            console.log('getSentiment');
+            console.log(result);
+            console.log(result.text());
+            data = result;
+          })
+          .catch(error => console.log('error', error));
+        return data;
       }
     }
   }

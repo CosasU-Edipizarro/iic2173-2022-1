@@ -3,16 +3,7 @@ const {
 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Room extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
+  class Room extends Model {}
   Room.init({
     uuid: DataTypes.UUID,
     name: DataTypes.STRING,
@@ -24,5 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Room',
   });
+  Room.associate = function associate(models) {
+    Room.hasMany(models.Room_permission, {
+      foreignKey: 'room_id',
+    });
+  };
   return Room;
 };

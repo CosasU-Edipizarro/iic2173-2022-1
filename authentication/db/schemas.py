@@ -29,7 +29,10 @@ class Token(TokenBase):
 
 class ChatToken(Base):
     token: str
+    own_uuid: str
     other_user_uuid: str
+    username: str
+    other_user_username: str
     
 
 class UserLoginBase(Base):

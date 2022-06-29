@@ -133,6 +133,9 @@ def get_user_by_email(db: Session, email: str):
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
+def get_user_by_uuid(db: Session, uuid: str):
+    return db.query(User).filter(User.uuid == uuid).first()
+
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
@@ -171,4 +174,11 @@ def create_chat_token(user: schemas.User, sender_id: int, db: Session):
     to_encode = data_to_encode.copy()
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     other_user = db.query(User).filter(User.id == sender_id).first()
-    return {"token": encoded_jwt, "other_user_uuid": other_user.uuid}
+    information = {
+        "token": encoded_jwt,
+        "own_uuid": user.uui,
+        "other_user_uuid": other_user.uuid,
+        "username": user.username,
+        "other_user_username": other_user.username
+    }
+    return information

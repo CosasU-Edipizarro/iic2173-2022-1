@@ -13,10 +13,13 @@ import SoftUIDashboard from "./soft-ui-dashboard";
 // window.hostname = 'http://api.iic2173-g19.xyz'
 // window.auth_hostname = 'http://auth.iic2173-g19.xyz'
 // window.chat_hostname = 'pendiente'
+// window.ws_hostname = 'pendiente
 
-window.hostname = 'http://192.168.1.125:8000'
-window.auth_hostname = 'http://192.168.1.125:8080'
-window.chat_hostname = 'http://192.168.1.125:8088'
+window.hostname = 'http://192.168.1.81:8000'
+window.auth_hostname = 'http://192.168.1.81:8080'
+window.chat_hostname = 'http://192.168.1.81:8088'
+window.ws_hostname = 'ws://192.168.1.81:8088'
+window.sentiment = 'https://30zwhcjsc2.execute-api.us-east-2.amazonaws.com/test/comprehendLambda'
 
 
 
