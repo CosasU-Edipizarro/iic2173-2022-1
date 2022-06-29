@@ -121,7 +121,8 @@
         let requestOptions = {
           method: 'GET',
           headers: myHeaders,
-          redirect: 'follow'
+          redirect: 'follow',
+          mode: 'no-cors'
         };
         let data;
         console.log("ANTES DE REQUEST")
@@ -129,7 +130,7 @@
           .then((result) => {
             console.log('getSentiment');
             console.log(result);
-            console.log(result.text());
+            console.log(result.json());
             data = result;
           })
           .catch(error => console.log('error', error));

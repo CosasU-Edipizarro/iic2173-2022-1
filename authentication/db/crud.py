@@ -176,7 +176,7 @@ def create_chat_token(user: schemas.User, sender_id: int, db: Session):
     other_user = db.query(User).filter(User.id == sender_id).first()
     information = {
         "token": encoded_jwt,
-        "own_uuid": user.uui,
+        "own_uuid": user.uuid,
         "other_user_uuid": other_user.uuid,
         "username": user.username,
         "other_user_username": other_user.username
