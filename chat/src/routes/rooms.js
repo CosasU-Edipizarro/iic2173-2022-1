@@ -283,19 +283,19 @@ router.route({
     params: {
       id: Joi.number(),
     },
-    query: {
-      dateFrom: Joi.date().iso(),
-      dateTo: Joi.date().iso().max('now').min(Joi.ref('dateFrom')),
-    },
+    // query: {
+    //   dateFrom: Joi.date().iso(),
+    //   dateTo: Joi.date().iso().max('now').min(Joi.ref('dateFrom')),
+    // },
   },
   pre: async (ctx, next) => authorizeRoom(ctx, next, 'r'),
   handler: async (ctx) => {
     ctx.response.json = await ctx.orm.Message.findAll({
       where: {
         room_id: ctx.params.id,
-        createdAt: {
-          [Op.between]: [ctx.query.dateFrom, ctx.query.dateTo],
-        },
+        // createdAt: {
+        //   [Op.between]: [ctx.query.dateFrom, ctx.query.dateTo],
+        // },
       },
     });
     ctx.status = 200;

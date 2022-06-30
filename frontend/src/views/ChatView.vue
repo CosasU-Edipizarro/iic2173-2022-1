@@ -55,6 +55,8 @@
         if (response.emitter) {
           response.sentiment = await deez.getSentiment(response.content);
           deez.chatMessages.push(response);
+          const element = document.getElementsByClassName("chat-container")[0];
+          element.scrollTop = element.scrollHeight;
         }
       }
       const chat_token = this.$cookies.get('chat_token');
@@ -67,19 +69,26 @@
         this.send(JSON.stringify({"type":"token", "content": chat_token}));
         this.send(JSON.stringify({"type":"select_room", "room_id": room_id}));
       }
+      this.loadChat()
     },
     methods: {
       async loadChat () {
-        var requestOptions = {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${this.$cookies.get('chat_token')}`);
+        let requestOptions = {
           method: 'GET',
+          headers: myHeaders,
           mode: "cors",
           redirect: 'follow'  
         };
-        await fetch(`${window.chat_hostname}/rooms/${this.room_id}`, requestOptions)
+        await fetch(`${window.chat_hostname}/rooms/${this.$cookies.get('room_id')}/messages`, requestOptions)
           .then(response => response.json())
-          .then(data => { this.messages = data; console.log(this.users); })
-          .then(() => { this.loaded = true; })
+          .then(data => { this.chatMessages = data.content; console.log(data); })
           .catch(error => console.log('error', error));
+        
+        const element = document.getElementsByClassName("chat-container")[0];
+        element.scrollTop = element.scrollHeight;
       },
       onScroll () {
         let scrollValue = this.$refs.chatContainer.scrollTop
@@ -125,7 +134,7 @@
           mode: 'no-cors'
         };
         let data;
-        console.log("ANTES DE REQUEST")
+        console.log("ANTES DE SENTIMENT REQUEST")
         await fetch(`${window.sentiment}?text=${text}`, requestOptions)
           .then((result) => {
             console.log('getSentiment');
@@ -167,7 +176,7 @@
   }
   .chat-container{
     box-sizing: border-box;
-    height: calc(100vh - 9.5rem);
+    height: calc(88vh - 9.5rem);
     overflow-y: auto;
     padding: 10px;
     background-color: #f2f2f2;

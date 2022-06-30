@@ -37,7 +37,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     access_token = token['access_token']
 
     verification_email = crud.create_verification_email(db, created_user.id, str(access_token))
-    # await utils.send_verification_email(db, created_user.id, created_user.email, verification_email.access_token)
+    await utils.send_verification_email(db, created_user.id, created_user.email, verification_email.access_token)
     return token
 
 @router.get("/{user_id}/verify/{token}")

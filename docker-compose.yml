@@ -36,6 +36,7 @@ services:
       - backend
       - authentication
       - flower
+      - chat
     networks:
       - nginx_network
 
@@ -158,6 +159,58 @@ services:
     depends_on:
       - db_auth
 
+  ##############################
+  # Chat Environment #
+  ##############################
+
+  db_chat:
+    container_name: db_chat
+    image: postgres:13
+    restart: unless-stopped
+    volumes:
+      - messagingDB:/var/lib/postgresql/data
+    env_file: 
+      - ./config/environment/.env.db_chat
+    expose:
+      - 5432
+    networks:
+      - chat_network
+
+  chat:
+    build:
+      context: chat
+      dockerfile: Dockerfile
+    container_name: chat
+    restart: unless-stopped
+    volumes:
+      - /usr/src/chat/node_modules
+      - ./chat/:/usr/src/chat
+    expose:
+      - 7777
+      - 9229
+    command:
+      "npm run debug"
+    env_file: 
+      - ./config/environment/.env.chat
+    environment:
+      - DUMMY=0
+    depends_on:
+      - db_chat
+      - pubsub
+    networks:
+      - chat_network
+      - nginx_network
+
+  pubsub:
+    container_name: pubsub
+    image: redis:latest
+    restart: unless-stopped
+    expose:
+      - 6379
+    networks:
+      - chat_network
+
+
 networks:
   nginx_network:
     driver: bridge
@@ -167,8 +220,11 @@ networks:
     driver: bridge
   auth_db_network:
     driver: bridge
+  chat_network:
+    driver: bridge
 
 volumes:
   database_data:
   database_auth_data:
+  messagingDB:
   app:
