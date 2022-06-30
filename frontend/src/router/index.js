@@ -9,6 +9,7 @@ import SignIn from "@/views/SignIn.vue";
 import SignUp from "@/views/SignUp.vue";
 import Maps from "@/views/Maps.vue";
 import Userlist from "@/views/Userlist.vue";
+import ChatView from "@/views/ChatView.vue";
 
 const routes = [
   {
@@ -65,6 +66,11 @@ const routes = [
     path: "/userlist",
     name: "Userlist",
     component: Userlist,
+  },
+  {
+    path: "/chat",
+    name: "Chat View",
+    component: ChatView,
   },
 ];
 

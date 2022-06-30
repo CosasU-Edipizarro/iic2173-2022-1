@@ -43,6 +43,7 @@ class User(Base):
     phone = Column(Text(), unique=True)
     hashed_password = Column(Text(), nullable=False)
     verified = Column(Boolean(), default=False)
+    uuid = Column(Text(), unique=True, nullable=False)
 
     token = relationship("Token", back_populates="user", uselist=False)
 

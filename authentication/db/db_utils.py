@@ -4,6 +4,8 @@ def load_env():
     ENV = dict()
     ENV['DEBUG'] = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
     ENV['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'foo')
+    ENV['ALGORITHM'] = os.environ.get('ALGORITHM', 'bar')
+    ENV['ACCESS_TOKEN_EXPIRE_MINUTES'] = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', '9000'))
     ENV['JWT_SECRET'] = os.environ.get('JWT_SECRET', 'secret')
 
     ENV['DBUSER'] = os.environ.get('POSTGRES_USER', 'secret')
@@ -28,6 +30,8 @@ def load_env():
     ENV['URL_AUTH'] = os.environ.get('URL_AUTH', 'localhost:8080')
     ENV['URL_FRONT'] = os.environ.get('URL_FRONT', 'localhost:3000')
     ENV['URL_NO_PROXY'] = os.environ.get('URL_NO_PROXY', 'localhost')
+    ENV['URL_CHAT'] = os.environ.get('URL_CHAT', 'localhost:8088')
 
+    ENV['ENTITY_UUID'] = os.environ.get('ENTITY_UUID', 'b20313a6-6b2d-43ce-be63-5f11b4deebe1')
 
     return ENV

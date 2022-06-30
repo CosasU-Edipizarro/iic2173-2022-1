@@ -15,6 +15,7 @@ class TokenData(Base):
     name: str
     phone: str
     verified: bool
+    uuid: str
 
 class TokenCreate(TokenBase):
     pass
@@ -25,6 +26,14 @@ class Token(TokenBase):
 
     class Config:
         orm_mode = True
+
+class ChatToken(Base):
+    token: str
+    own_uuid: str
+    other_user_uuid: str
+    username: str
+    other_user_username: str
+    
 
 class UserLoginBase(Base):
     username: str
@@ -47,6 +56,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     verified: bool
+    uuid: str
 
     class Config:
         orm_mode = True

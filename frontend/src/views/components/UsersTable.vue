@@ -83,7 +83,7 @@ export default {
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        let raw = JSON.stringify({});
+        let raw = JSON.stringify({"sender_id": user_id, "receiver_id": receiver_id});
         let requestOptions = {
           method: 'POST',
           mode: "cors",
@@ -91,7 +91,7 @@ export default {
           body: raw,
           redirect: 'follow'
         };
-        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, requestOptions)
+        await fetch(`${window.hostname}/pings/`, requestOptions)
         .then(response => response.json())
         .then(() => {
           alert('Ping enviado correctamente');

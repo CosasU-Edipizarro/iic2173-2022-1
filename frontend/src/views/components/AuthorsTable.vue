@@ -49,49 +49,126 @@ export default {
         alert("Debes iniciar sesión para acceder a esta página");
       }
     },
-    //
-    /*
-    async acceptPing(_id) {
+    async acceptPing(sender_id) {
+      const token = this.$cookies.get("token");
+      let user_id;
+      let other_user_uuid;
+      let chat_token;
+      let room_id;
+
+      if (token) {
+        user_id = this.$cookies.get("user_id");
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", token);
+        let raw = JSON.stringify({"sender_id": sender_id, "receiver_id": user_id});
+        let requestOptions = {
+          method: 'PATCH',
+          mode: "cors",
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        await fetch(`${window.hostname}/pings/`, requestOptions)
+          .then(response => response.json())
+          .then(() => {
+            alert('Ping aceptado correctamente');
+          })
+          .then(async () => {
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", `Bearer ${token}`);
+            requestOptions = {
+              method: 'GET',
+              mode: "cors",
+              headers: myHeaders,
+              redirect: 'follow'
+            };
+            console.log("PRE-get chat token");
+            await fetch(`${window.auth_hostname}/chat/token/${sender_id}`, requestOptions)
+              .then(response => response.json())
+              .then(async (data) => {
+                other_user_uuid = data.other_user_uuid;
+                chat_token = data.token;
+
+                console.log("CHAT TOKEN");
+                console.log(chat_token);
+
+                let myHeaders2 = new Headers();
+                myHeaders2.append("Content-Type", "application/json");
+                myHeaders2.append("Authorization", `Bearer ${chat_token}`);
+                let raw = JSON.stringify({
+                  "name": `Chat ${user_id} - ${sender_id}`,
+                  "level_admin": 100,
+                  "type": "user2user"
+                });
+                let requestOptions = {
+                  method: 'POST',
+                  mode: "cors",
+                  headers: myHeaders2,
+                  body: raw,
+                  redirect: 'follow'
+                };
+                await fetch(`${window.chat_hostname}/rooms`, requestOptions)
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log("inside rooms");
+                    console.log(data);
+                    room_id = data.content.room.id;
+                  })
+                  .then(async () => {
+                    console.log("inside async 2");
+                    let myHeaders3 = new Headers();
+                    myHeaders3.append("Content-Type", "application/json");
+                    myHeaders3.append("Authorization", `Bearer ${chat_token}`);
+                    let raw = JSON.stringify({"entity_UUID": other_user_uuid, "permissions": "rwa", "level": 100});
+                    let requestOptions = {
+                      method: 'PUT',
+                      mode: "cors",
+                      headers: myHeaders3,
+                      body: raw,
+                      redirect: 'follow'
+                    };
+                    console.log("PRE-put room");
+                    await fetch(`${window.chat_hostname}/rooms/${room_id}/members`, requestOptions)
+                      .then(response => {
+                        console.log(response.json());
+                        console.log("agregado");
+                      })
+                  })
+              })
+          })
+        .catch(error => { console.log(error); alert(error) });
+      } else {
+        alert("Debes iniciar sesión para acceder a esta página");
+      }
+    },
+    async denyPing(sender_id) {
       const token = this.$cookies.get("token");
       if (token) {
         const user_id = this.$cookies.get("user_id");
-        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          },
-        })
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", token);
+        let raw = JSON.stringify({"sender_id": sender_id, "receiver_id": user_id});
+        let requestOptions = {
+          method: 'DELETE',
+          mode: "cors",
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        await fetch(`${window.hostname}/pings/`, requestOptions)
         .then(response => response.json())
         .then(() => {
-          alert('Ping enviado correctamente');
+          alert('Ping rechazado correctamente');
         })
         .catch(error => { console.log(error); alert(error) });
       } else {
         alert("Debes iniciar sesión para acceder a esta página");
       }
     }
-    async denyPing(_id) {
-      const token = this.$cookies.get("token");
-      if (token) {
-        const user_id = this.$cookies.get("user_id");
-        await fetch(`${window.hostname}/pings/${user_id}/${receiver_id}`, {
-          method: "POST",//su DELETE
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          },
-        })
-        .then(response => response.json())
-        .then(() => {
-          alert('Ping enviado correctamente');
-        })
-        .catch(error => { console.log(error); alert(error) });
-      } else {
-        alert("Debes iniciar sesión para acceder a esta página");
-      }
-    }*/
-  },
+  }
 };
 </script>
 
@@ -138,11 +215,11 @@ export default {
         </td>
 
         <td class="align-middle text-center text-sm">
-          <button type="button" class="btn btn-outline-success btn-sm">Aceptar</button>
+          <button type="button" class="btn btn-outline-success btn-sm" @click="acceptPing(user.user_id)">Aceptar</button>
         </td>
         
-        <td class="align-middle">
-          <button type="button" class="mb-0 btn btn-link pe-3 ps-0 ms-auto" href="javascript:;">Rechazar</button>
+        <td class="align-middle text-center text-sm">
+          <button type="button" class="btn btn-outline-danger btn-sm" @click="denyPing(user.user_id)">Rechazar</button>
         </td>
       </tr>
     </tbody>

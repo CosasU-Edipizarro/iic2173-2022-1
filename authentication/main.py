@@ -23,6 +23,7 @@ app.add_middleware(
 
 app.include_router(routers["auth"])
 app.include_router(routers["users"])
+app.include_router(routers["chat"])
 
 
 @app.get("/")

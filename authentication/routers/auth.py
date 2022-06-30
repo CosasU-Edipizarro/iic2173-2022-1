@@ -27,12 +27,3 @@ async def login_for_access_token(user_data: schemas.UserLogin, db: Session = Dep
 async def verify_auth(current_user: schemas.User = Depends(crud.get_current_user)):
     print(current_user)
     return current_user
-
-
-
-# Plan B
-# @router.get("/verify2", response_model=schemas.User)
-# async def root(request: Request):
-#     authentication_header = request.headers.get('Authentication')
-#     token = authentication_header
-#     current_user = crud.get_current_user(db, token)

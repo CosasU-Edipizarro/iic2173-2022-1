@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from db.models import ENV, Session, get_db, User, Ping
 from db import schemas, crud
+from http import HTTPStatus
 
 from dependencies import utils
 from tasks.celery_tasks import dindin
@@ -9,12 +10,13 @@ from tasks.celery_utils import get_task_info
 
 router = APIRouter(prefix="/pings")
 
-@router.post("/{sender_id}/{receiver_id}", response_model=schemas.Ping)
+@router.post("/", response_model=schemas.Ping)
 async def create_user_ping(
-    sender_id: int,
-    receiver_id: int,
+    users: schemas.PingCreate,
     db: Session = Depends(get_db)
 ):
+    sender_id = users.sender_id
+    receiver_id = users.receiver_id
     print("create_user_ping")
     print(f"Sender id: {sender_id}")
     print(f"Receiver id: {receiver_id}")
@@ -48,8 +50,31 @@ async def read_user_sent_pings(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db)
-
 ):
     receivers = await crud.get_user_pings_sent(db=db, user_id=user_id, skip=skip, limit=limit)
-
     return receivers
+
+@router.get("/accepted/{user_id}")
+async def read_user_accepted_pings(
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    friends = await crud.get_user_pings_accepted(db=db, user_id=user_id, skip=skip, limit=limit)
+    return friends
+
+@router.patch("/", response_model=schemas.Ping)
+def accept_ping(
+    users: schemas.PingBase,
+    db: Session = Depends(get_db)
+):
+    return crud.accept_ping(db, users.sender_id, users.receiver_id)
+
+@router.delete("/")
+def deny_ping(
+    users: schemas.PingBase,
+    db: Session = Depends(get_db)
+):
+    crud.delete_ping(db, users.sender_id, users.receiver_id)
+    return Response(status_code=HTTPStatus.NO_CONTENT.value)

@@ -4,21 +4,23 @@ from typing import Union
 
 from datetime import datetime, timedelta
 
-from db.models import Session, User, VerificationEmail, Token, get_db
+from db.models import ENV, Session, User, VerificationEmail, Token, get_db
 from db import schemas
 from dependencies import utils
 
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-
-SECRET_KEY = "b75f0e58f700478526706d771021c3a057fa9118d2c0166adb05e00cb55b93c2"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
+import uuid
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 
+ALGORITHM=ENV["ALGORITHM"]
+SECRET_KEY=ENV["SECRET_KEY"]
+ACCESS_TOKEN_EXPIRE_MINUTES=ENV["ACCESS_TOKEN_EXPIRE_MINUTES"]
+URL_CHAT=ENV["URL_CHAT"]
+ENTITY_UUID=ENV["ENTITY_UUID"]
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -44,7 +46,8 @@ def create_access_token(db: Session, data: dict, expires_delta: Union[timedelta,
         "email": user_data.email,
         "name": user_data.name,
         "phone": user_data.phone,
-        "verified": user_data.verified
+        "verified": user_data.verified,
+        "uuid": user_data.uuid
     }
     to_encode = data_to_encode.copy()
     if expires_delta:
@@ -88,7 +91,8 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
             email=payload.get("email"),
             name=payload.get("name"),
             phone=payload.get("phone"),
-            verified=payload.get("verified")
+            verified=payload.get("verified"),
+            uuid=payload.get("uuid")
         )
 
     except JWTError:
@@ -110,7 +114,8 @@ def create_user(db: Session, user: schemas.UserCreate):
         username=user.username,
         email=user.email,
         phone=user.phone,
-        hashed_password=password_hash
+        hashed_password=password_hash,
+        uuid=uuid.uuid4()
     )
     db.add(db_user)
     db.commit()
@@ -127,6 +132,9 @@ def get_user_by_email(db: Session, email: str):
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
+
+def get_user_by_uuid(db: Session, uuid: str):
+    return db.query(User).filter(User.uuid == uuid).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
@@ -153,3 +161,24 @@ def get_verification_email(db: Session, user_id: int, token: str):
     email_token = VerEmail.access_token
     return db.query(VerificationEmail
         ).filter(VerificationEmail.user_id == user_id, VerificationEmail.access_token == token).first()
+
+
+def create_chat_token(user: schemas.User, sender_id: int, db: Session):
+    data_to_encode = {
+        "exp": 1738285323,
+        "sub": user.uuid,
+        "entityUUID": ENTITY_UUID,
+        "userUUID": user.uuid,
+        "levelOnEntity": 100
+    }
+    to_encode = data_to_encode.copy()
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    other_user = db.query(User).filter(User.id == sender_id).first()
+    information = {
+        "token": encoded_jwt,
+        "own_uuid": user.uuid,
+        "other_user_uuid": other_user.uuid,
+        "username": user.username,
+        "other_user_username": other_user.username
+    }
+    return information
