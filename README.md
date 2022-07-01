@@ -26,14 +26,14 @@
 
 1. Para correr en local
   ```
-  docker-compose -f docker-compose.dev.yml build
-  docker-compose -f docker-compose.dev.yml up
+  docker compose -f docker compose.dev.yml build
+  docker compose -f docker compose.dev.yml up
   ```
 
 2. Para correr en servidor
   ```
-  sudo docker-compose build
-  sudo docker-compose up -d
+  sudo docker compose build
+  sudo docker compose up -d
   ```
 
 La API está disponible en  https://api.iic2173-g19.xyz/
@@ -56,7 +56,7 @@ Para replicar el pipe CI/CD se tienen que copiar los achivos que se encuentran e
   ```
   failed to solve with frontend dockerfile.v0
   ```
-  En `docker-compose build`
+  En `docker compose build`
   Correr con sudo
   De seguir persistiendo el error, desactivart Buildkit
   ```
@@ -72,12 +72,12 @@ Para replicar el pipe CI/CD se tienen que copiar los achivos que se encuentran e
 
 3. Si quieres reinicar TODO docker:
   ```
-  sudo docker-compose down
+  sudo docker compose down
   sudo docker rm -f $(sudo docker ps -a -q)
   sudo docker volume rm $(sudo docker volume ls -q)
   sudo docker image rm $(sudo docker image ls)
-  sudo docker-compose build
-  sudo docker-compose up -d
+  sudo docker compose build
+  sudo docker compose up -d
   ```
 
 4. Si instalaste docker compose v2 (Nuevo default), instala compose switch para conseguir compatibilidad con v1 (Usada por archivo `./init-letsencrypt.sh`)
