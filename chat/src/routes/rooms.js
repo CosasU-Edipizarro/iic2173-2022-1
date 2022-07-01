@@ -66,25 +66,36 @@ async function authorizeRoom(ctx, next, permission) {
 // Get rooms for my entity based on uuid
 router.route({
   method: 'GET',
-  path: '/',
+  path: '/:uuid2',
   validate: {
-    query: {
-      limit: Joi.number(),
-      offset: Joi.number(),
-      accepted: Joi.boolean(),
+    params: {
+      uuid2: Joi.string(),
     },
   },
   handler: async (ctx) => {
-    const rooms = await ctx.orm.Room_permission.findAll({
+    // ROOMS FIRST USER
+    const roomsIdsUser1 = [];
+    const roomsUser1 = await ctx.orm.Room_permission.findAll({
+      attributes: ['room_id'],
       where: {
         entity_UUID: ctx.state.tokendata.userUUID,
-        accepted: ctx.request.query.accepted,
       },
-      limit: ctx.request.query.limit,
-      offset: ctx.request.query.offset,
     });
+    roomsUser1.forEach((room) => { roomsIdsUser1.push(room.room_id)});
+    // ROOMS SECOND USER
+    const roomsIdsUser2 = [];
+    const roomsUser2 = await ctx.orm.Room_permission.findAll({
+      attributes: ['room_id'],
+      where: {
+        entity_UUID: ctx.params.uuid2,
+      },
+    });
+    // INTERSECTION
+    roomsUser2.forEach((room) => { roomsIdsUser2.push(room.room_id)});
+    const roomIdv2 = (roomsIdsUser1.filter((value) => roomsIdsUser2.includes(value)))[0];
+
     ctx.status = 200;
-    ctx.response.json = rooms;
+    ctx.response.json = roomIdv2;
   },
 });
 
@@ -272,19 +283,19 @@ router.route({
     params: {
       id: Joi.number(),
     },
-    query: {
-      dateFrom: Joi.date().iso(),
-      dateTo: Joi.date().iso().max('now').min(Joi.ref('dateFrom')),
-    },
+    // query: {
+    //   dateFrom: Joi.date().iso(),
+    //   dateTo: Joi.date().iso().max('now').min(Joi.ref('dateFrom')),
+    // },
   },
   pre: async (ctx, next) => authorizeRoom(ctx, next, 'r'),
   handler: async (ctx) => {
     ctx.response.json = await ctx.orm.Message.findAll({
       where: {
         room_id: ctx.params.id,
-        createdAt: {
-          [Op.between]: [ctx.query.dateFrom, ctx.query.dateTo],
-        },
+        // createdAt: {
+        //   [Op.between]: [ctx.query.dateFrom, ctx.query.dateTo],
+        // },
       },
     });
     ctx.status = 200;

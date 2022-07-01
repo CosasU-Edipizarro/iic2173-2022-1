@@ -19,6 +19,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 ALGORITHM=ENV["ALGORITHM"]
 SECRET_KEY=ENV["SECRET_KEY"]
 ACCESS_TOKEN_EXPIRE_MINUTES=ENV["ACCESS_TOKEN_EXPIRE_MINUTES"]
+URL_CHAT=ENV["URL_CHAT"]
+ENTITY_UUID=ENV["ENTITY_UUID"]
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -131,6 +133,9 @@ def get_user_by_email(db: Session, email: str):
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
+def get_user_by_uuid(db: Session, uuid: str):
+    return db.query(User).filter(User.uuid == uuid).first()
+
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
@@ -156,3 +161,24 @@ def get_verification_email(db: Session, user_id: int, token: str):
     email_token = VerEmail.access_token
     return db.query(VerificationEmail
         ).filter(VerificationEmail.user_id == user_id, VerificationEmail.access_token == token).first()
+
+
+def create_chat_token(user: schemas.User, sender_id: int, db: Session):
+    data_to_encode = {
+        "exp": 1738285323,
+        "sub": user.uuid,
+        "entityUUID": ENTITY_UUID,
+        "userUUID": user.uuid,
+        "levelOnEntity": 100
+    }
+    to_encode = data_to_encode.copy()
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    other_user = db.query(User).filter(User.id == sender_id).first()
+    information = {
+        "token": encoded_jwt,
+        "own_uuid": user.uuid,
+        "other_user_uuid": other_user.uuid,
+        "username": user.username,
+        "other_user_username": other_user.username
+    }
+    return information

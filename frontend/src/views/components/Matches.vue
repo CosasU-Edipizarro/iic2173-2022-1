@@ -33,9 +33,45 @@ export default {
     },
     async goToChat(sender_id) {
       const token = this.$cookies.get("token");
+      let other_user_uuid;
+      let chat_token;
       if (token) {
-        const user_id = this.$cookies.get("user_id");
-        //ir a la sala ¿?¿?¿'¡?¡?¿?¿
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+        let requestOptions = {
+          method: 'GET',
+          mode: "cors",
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+        await fetch(`${window.auth_hostname}/chat/token/${sender_id}`, requestOptions)
+          .then(response => response.json())
+          .then(async (data) => {
+            other_user_uuid = data.other_user_uuid;
+            chat_token = data.token;
+            this.$cookies.set('chat_token', data.token, { maxAge: 60 * 60 * 24 * 7 });
+            this.$cookies.set('own_uuid', data.own_uuid, { maxAge: 60 * 60 * 24 * 7 });
+            this.$cookies.set('other_user_uuid', data.other_user_uuid, { maxAge: 60 * 60 * 24 * 7 });
+            this.$cookies.set('username', data.username, { maxAge: 60 * 60 * 24 * 7 });
+            this.$cookies.set('other_user_username', data.other_user_username, { maxAge: 60 * 60 * 24 * 7 });
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", `Bearer ${chat_token}`);
+            let requestOptions = {
+              method: 'GET',
+              mode: "cors",
+              headers: myHeaders,
+              redirect: 'follow'
+            };
+            await fetch(`${window.chat_hostname}/rooms/${other_user_uuid}`, requestOptions)
+              .then(response => response.json())
+              .then(async (data) => {
+                await this.$cookies.set('room_id', data.content, { maxAge: 60 * 60 * 24 * 7 })
+                  .then(this.$router.push('/chat')
+                );
+            });
+        });
       }
     },
   }

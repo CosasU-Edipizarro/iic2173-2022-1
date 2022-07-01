@@ -51,9 +51,14 @@ export default {
     },
     async acceptPing(sender_id) {
       const token = this.$cookies.get("token");
+      let user_id;
+      let other_user_uuid;
+      let chat_token;
+      let room_id;
+
       if (token) {
-        const user_id = this.$cookies.get("user_id");
-        var myHeaders = new Headers();
+        user_id = this.$cookies.get("user_id");
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", token);
         let raw = JSON.stringify({"sender_id": sender_id, "receiver_id": user_id});
@@ -65,10 +70,74 @@ export default {
           redirect: 'follow'
         };
         await fetch(`${window.hostname}/pings/`, requestOptions)
-        .then(response => response.json())
-        .then(() => {
-          alert('Ping aceptado correctamente');
-        })
+          .then(response => response.json())
+          .then(() => {
+            alert('Ping aceptado correctamente');
+          })
+          .then(async () => {
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", `Bearer ${token}`);
+            requestOptions = {
+              method: 'GET',
+              mode: "cors",
+              headers: myHeaders,
+              redirect: 'follow'
+            };
+            console.log("PRE-get chat token");
+            await fetch(`${window.auth_hostname}/chat/token/${sender_id}`, requestOptions)
+              .then(response => response.json())
+              .then(async (data) => {
+                other_user_uuid = data.other_user_uuid;
+                chat_token = data.token;
+
+                console.log("CHAT TOKEN");
+                console.log(chat_token);
+
+                let myHeaders2 = new Headers();
+                myHeaders2.append("Content-Type", "application/json");
+                myHeaders2.append("Authorization", `Bearer ${chat_token}`);
+                let raw = JSON.stringify({
+                  "name": `Chat ${user_id} - ${sender_id}`,
+                  "level_admin": 100,
+                  "type": "user2user"
+                });
+                let requestOptions = {
+                  method: 'POST',
+                  mode: "cors",
+                  headers: myHeaders2,
+                  body: raw,
+                  redirect: 'follow'
+                };
+                await fetch(`${window.chat_hostname}/rooms`, requestOptions)
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log("inside rooms");
+                    console.log(data);
+                    room_id = data.content.room.id;
+                  })
+                  .then(async () => {
+                    console.log("inside async 2");
+                    let myHeaders3 = new Headers();
+                    myHeaders3.append("Content-Type", "application/json");
+                    myHeaders3.append("Authorization", `Bearer ${chat_token}`);
+                    let raw = JSON.stringify({"entity_UUID": other_user_uuid, "permissions": "rwa", "level": 100});
+                    let requestOptions = {
+                      method: 'PUT',
+                      mode: "cors",
+                      headers: myHeaders3,
+                      body: raw,
+                      redirect: 'follow'
+                    };
+                    console.log("PRE-put room");
+                    await fetch(`${window.chat_hostname}/rooms/${room_id}/members`, requestOptions)
+                      .then(response => {
+                        console.log(response.json());
+                        console.log("agregado");
+                      })
+                  })
+              })
+          })
         .catch(error => { console.log(error); alert(error) });
       } else {
         alert("Debes iniciar sesión para acceder a esta página");

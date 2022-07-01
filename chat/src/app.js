@@ -7,8 +7,9 @@ const koajwt = require('koa-jwt');
 const override = require('koa-override-method');
 const helmet = require('koa-helmet');
 const http = require('http');
-// const casbin = require('casbin')
+// const casbin = require('casbin');
 // const authz = require('koa-authz');
+const cors = require('@koa/cors');
 
 // Things for websockets
 const redis = require('redis');
@@ -23,11 +24,16 @@ const orm = require('./models');
 
 const app = websockify(new Koa());
 
+const options = {
+  origin: '*',
+};
+app.use(cors(options));
+
 const developmentMode = app.env === 'development';
 const testMode = app.env === 'test';
 const productionMode = app.env === 'production';
 
-if (testMode || productionMode) {
+if (testMode || productionMode) {//
   // Helmet stuff -> Some security initiatives
   // app.use(helmet.frameguard('sameorigin'));
   app.use(helmet.hidePoweredBy());
@@ -61,18 +67,18 @@ app.use((ctx, next) => {
   ctx.response.meta = {};
   ctx.response.json = {};
   ctx.state.env = ctx.app.env;
-  ctx.acceptsEncodings('gzip', 'deflate', 'br');
+  ctx.acceptsEncodings('gzip', 'deflate', 'br');//
   return next();
 });
 // log requests
 app.use(koaLogger());
-console.log(process.env.JWT_MASTER_SECRET);
+
 app.use(koajwt({
   secret: process.env.JWT_MASTER_SECRET,
   key: 'tokendata',
   // passthrough: true,
-  audience: process.env.AUDIENCE,
-  issuer: process.env.ISSUER,
+  // audience: process.env.AUDIENCE,
+  // issuer: process.env.ISSUER,
 }));
 
 // parse request body
@@ -171,9 +177,10 @@ async function authorizeMessageToRoom(ctx, message, actualUser) {
   return 0;
 }
 wsrouter.all('/chat', async (ctx) => {
+  console.log('ENTRANDO AL /chat');
   const redisClientSub = redis.createClient(REDIS_SERVER);
   let actualUser;
-  let authReady = false;
+  let authReady = false;//=true; //:)
   let roomIDTarget = 0;
   let trials = 0;
   ctx.websocket.send('{"type":"query","data":"START?"}');
@@ -210,9 +217,9 @@ wsrouter.all('/chat', async (ctx) => {
     } else if (command.type === 'select_room') {
       roomIDTarget = await authorizeMessageToRoom(ctx, command, actualUser);
       if (roomIDTarget === 0) {
-        ctx.websocket.send('{"type":"status","data":"NOTAUTHORIZED"');
+        ctx.websocket.send('{"type":"status","data":"NOTAUTHORIZED"}');
       } else {
-        ctx.websocket.send('{"type":"status","data":"CONNECTED"');
+        ctx.websocket.send('{"type":"status","data":"CONNECTED"}');
         redisClientSub.unsubscribe('*'); // Test this
         redisClientSub.subscribe(`room-${roomIDTarget}`);
       }

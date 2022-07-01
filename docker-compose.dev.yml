@@ -147,6 +147,7 @@ services:
     image: nginx
     ports:
       - 8088:80
+      - 8089:81
     volumes:
       - ./config/nginx/development/chat:/etc/nginx/conf.d
     depends_on:
